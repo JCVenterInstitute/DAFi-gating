@@ -2,11 +2,11 @@
 	
 	User-directed unsupervised identification of cell populations
 	
-	Author: Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com
+	Author: Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., ichang@jcvi.org, and Bob Sinkovits, Ph.D., sinkovit@sdsc.edu
 	
 	Copyright: Author and J. Craig Venter Institute
 	
-	Usage: DAFi-gating_p data_file gating_spec_file filter_spec_file first_pass_max_num_clusters second_pass_max_num_clusters num_threads
+	Usage: dafi_gating data_file gating_spec_file filter_spec_file first_pass_max_num_clusters second_pass_max_num_clusters num_threads seed
 	
 	data_file is a tab delimited file with compensated and transformed values.
 	
@@ -27,6 +27,8 @@
     second_pass_max_num_clusters is the maximum number of clusters for the additional pass k-means clustering (also re-normalized)
     
     num_threads is the number of threads available to partition the events for parallelization
+    
+    seed is the initialization number for random number generator for the cluster seeding
 ***********************************************************************************************************************/
 #include "DAFi-gating_omp.h"
 
