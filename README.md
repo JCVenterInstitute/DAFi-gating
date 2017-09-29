@@ -7,6 +7,8 @@
 	
 	Copyright: Author and J. Craig Venter Institute
 	
+	Paper link: https://www.biorxiv.org/content/early/2017/09/26/193912
+	
 	Usage: dafi_gating data_file gating_spec_file filter_spec_file first_pass_max_num_clusters second_pass_max_num_clusters num_threads seed
 	
 	data_file is a tab delimited file with compensated and transformed values.
