@@ -28,3 +28,6 @@
 	second_pass_max_num_clusters is the maximum number of clusters for the second pass clustering (also re-normalized)
 	num_threads is the number of threads available to partition the events for parallelization
 	seed is the initial seed number for the random number generator used in the cluster seeding
+
+Please compile with intel optimization flags:
+	icc -O3 -xHost -o dafi_gating DAFi-gating_omp.c -lm
