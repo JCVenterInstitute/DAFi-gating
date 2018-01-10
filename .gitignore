@@ -1,0 +1,5 @@
+*.o
+*.dll
+*.Rhistory
+.Rproj.user
+DAFi.Rproj
