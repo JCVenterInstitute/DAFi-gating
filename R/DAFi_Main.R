@@ -19,7 +19,8 @@
 #' @param excludeGated  *experimental* set TRUE to exclude previously gated channels in reclustering (default FALSE)
 #' @param method        set clustering algorithm from the following choices: 'Kmeans' (default), 'fSOM'
 #' @param initializer   set initializer for Kmeans methods from the following choices: 'optimal_init', 'quantile_init', 'kmeans++' (default), and 'random'; see \href{https://cran.r-project.org/web/packages/ClusterR/ClusterR.pdf}{ClusterR}
-#'
+#' @param plotCentroids
+#' @param writeOutput
 #'
 #' @seealso \code{\link{cluster_run}},\code{\link{scatterTransform}},\code{\link{timeTransform}}
 #' 
@@ -86,22 +87,6 @@ DAFi <-
           "maxY",
           "ParentIndex")
       print("Parsed reverse configuration table")
-    }
-    
-    #Read in input raw fcs file
-    fcs_raw <-
-      suppressWarnings(flowCore::read.FCS(rawfcs_path))
-    
-    #Check and apply compensation
-    spill = keyword(fcs_raw)$SPILL
-    
-    if (is.null(spill) == FALSE) {
-      tryCatch({
-        fcs_raw = compensate(fcs_raw, spill)
-      }, error = function(ex) {
-        str(ex)
-        
-      })
     }
     
     #read in, compensate, transform, and format fcs file
