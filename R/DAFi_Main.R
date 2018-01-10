@@ -1,10 +1,3 @@
-# DAFi object
-# List containing the following
-# 
-# after ReadInput:
-#     data: matrix containing all the concatenated data files
-#     
-
 #' Run the DAFi algorithm
 #'
 #' Method to run general DAFi workflow. 
