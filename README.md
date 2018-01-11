@@ -56,6 +56,13 @@ so you can install this package using the devtools library.
 devtools::install_github("JCVenterInstitute/DAFi-gating", build_vignettes = TRUE)
 ```
 
+then checkout the built-in vignette for the DAFi library for more documentation
+
+```
+library(DAFi)
+browseVignettes(DAFi)
+```
+
 ### C (see details under src)
 icc or gcc compilers required for compiling binary from source.
 
