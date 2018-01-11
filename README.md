@@ -38,11 +38,13 @@ There are two concurrent implementations of the DAFi framework, one for the HPC 
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 |1|1|4|0|85|100|200|0|0|1|0|
 
-## Get the software
+## Get the software and documentations
 
 Check the [releases](https://github.com/JCVenterInstitute/DAFi-gating/releases) to obtain the [latest release](https://github.com/JCVenterInstitute/DAFi-gating/releases/latest)
 
 ### R
+
+#### install into R
 For the DAFi R implementation framework, R version > 3.4 is required (https://cran.r-project.org/bin/). In addition, please have installed:
 1) flowCore (https://www.bioconductor.org/packages/release/bioc/html/flowCore.html)
 2) flowViz (http://bioconductor.org/packages/release/bioc/html/flowViz.html)
@@ -77,3 +79,7 @@ icc -O3 -xHost -o dafi_gating DAFi-gating_omp.c -lm
 ```
 
 In addition, precompiled binaries without enhanced optimizations is available under [releases](https://github.com/JCVenterInstitute/DAFi-gating/releases)
+
+### DAFi R and C docker image
+If you have docker containerization system enabled, you can download the prebuilt images and run the DAFi as a containized command-line tool. Please see the docker folder under this repository.
+
