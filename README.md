@@ -43,14 +43,19 @@ There are two concurrent implementations of the DAFi framework, one for the HPC 
 Check the [releases](https://github.com/JCVenterInstitute/DAFi-gating/releases) to obtain the [latest release](https://github.com/JCVenterInstitute/DAFi-gating/releases/latest)
 
 ### R
-R version > 3.4 required (https://cran.r-project.org/bin/)
+For the DAFi R implementation framework, R version > 3.4 is required (https://cran.r-project.org/bin/). In addition, please have installed:
+1) flowCore (https://www.bioconductor.org/packages/release/bioc/html/flowCore.html)
+2) flowViz (http://bioconductor.org/packages/release/bioc/html/flowViz.html)
+3) ClusterR (https://cran.r-project.org/web/packages/ClusterR/index.html)
+4) FlowSOM (https://bioconductor.org/packages/release/bioc/html/FlowSOM.html)
 
-also, please install the devtools library
+
+For automated build and install, including dependent packages listed above, please install the devtools library
 ```
 install.packages("devtools")
 ```
 
-so you can install this package using the devtools library.
+so you can initiate the automated install of DAFi package
 
 ```
 devtools::install_github("JCVenterInstitute/DAFi-gating", build_vignettes = TRUE)
@@ -70,3 +75,5 @@ For optimal performance please compile with intel optimization flags:
 ```
 icc -O3 -xHost -o dafi_gating DAFi-gating_omp.c -lm
 ```
+
+In addition, precompiled binaries without enhanced optimizations is available under [releases](https://github.com/JCVenterInstitute/DAFi-gating/releases)
