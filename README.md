@@ -16,7 +16,7 @@ The DAFi package provides a new framework for cell population identification for
 
 There are two concurrent implementations of the DAFi framework, one for the HPC environment and uses optimized C binary codes to provide extensive parallelization for large datasets, while the other is for the desktop environment and uses existing R-based packages such as flowCore, FlowSOM, and ClusterR to provide flexibility of choosing different clustering algorithms and recursive filtering strategies. Both versions’ source codes and binary releases are available through the github repository, as well as their docker images for trouble free installation.    
 
-## Requirements (see inst/extdata for sample inputs): 
+## Input Requirements (see inst/extdata for sample inputs): 
 
 1) A raw FCS file for the R implementation of DAFi or a transformed text-based FCS file for the C implementation of DAFi.
 	
@@ -38,12 +38,28 @@ There are two concurrent implementations of the DAFi framework, one for the HPC 
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 |1|1|4|0|85|100|200|0|0|1|0|
 
-## Get the package
+## Get the software
 
 Check the [releases](https://github.com/JCVenterInstitute/DAFi-gating/releases) to obtain the [latest release](https://github.com/JCVenterInstitute/DAFi-gating/releases/latest)
 
-Or you can install this package using the devtools library.
+### R
+R version > 3.4 required (https://cran.r-project.org/bin/)
+
+also, please install the devtools library
+```
+install.packages("devtools")
+```
+
+so you can install this package using the devtools library.
 
 ```
 devtools::install_github("JCVenterInstitute/DAFi-gating", build_vignettes = TRUE)
+```
+
+### C (see details under src)
+icc or gcc compilers required for compiling binary from source.
+
+For optimal performance please compile with intel optimization flags: 
+```
+icc -O3 -xHost -o dafi_gating DAFi-gating_omp.c -lm
 ```
