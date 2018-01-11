@@ -12,8 +12,8 @@
 #' @param excludeGated  *experimental* set TRUE to exclude previously gated channels in reclustering (default FALSE)
 #' @param method        set clustering algorithm from the following choices: 'Kmeans' (default), 'fSOM'
 #' @param initializer   set initializer for Kmeans methods from the following choices: 'optimal_init', 'quantile_init', 'kmeans++' (default), and 'random'; see \href{https://cran.r-project.org/web/packages/ClusterR/ClusterR.pdf}{ClusterR}
-#' @param plotCentroids
-#' @param writeOutput
+#' @param plotCentroids whether or not to plot diagnostic plots to see centroid locations
+#' @param writeOutput   whether or not to generate output events and percentage tables
 #'
 #' @seealso \code{\link{cluster_run}},\code{\link{scatterTransform}},\code{\link{timeTransform}}
 #' 
@@ -27,11 +27,11 @@
 #' #' # Or specify method and options for Kmeans++ clustering
 #' DAFi("SampleData.fcs","include.config","exclude.config", k=500, method='Kmeans', initializer='kmeans++')
 #' 
-#' @importFrom flowCore read.FCS compensate transform logicleTransform exprs 
-#'             transformList write.FCS 'exprs<-'
-#' @importFrom flowViz
+#' @importFrom flowCore read.FCS compensate transform logicleTransform FCSTransTransform exprs keyword flowFrame filter Subset
+#'             transformList colnames 'exprs<-' 'colnames<-' rectangleGate polygonGate
+#' @importFrom flowViz plot
 #' @importFrom FlowSOM FlowSOM
-#' @importFrom ClusterR ClusterR
+#' @importFrom ClusterR KMeans_rcpp
 #' 
 #' @export 
 DAFi <-
@@ -45,7 +45,8 @@ DAFi <-
            method = "Kmeans", 
            initializer = "kmeans++",
            plotCentroids = TRUE,
-           writeOutput = TRUE) {
+           writeOutput = TRUE,
+           debugmode = FALSE) {
     
     #Parse dafi config file
     config_table <- read.table(config_path,
@@ -65,7 +66,7 @@ DAFi <-
         "Recluster",
         "Phenotype"
       )
-    print("Parsed configuration table")
+    cat("Parsed configuration table\n")
     
     if (!is.null(reverse_path)) {
       reverse_table <- read.table(reverse_path,
@@ -79,15 +80,15 @@ DAFi <-
           "minY",
           "maxY",
           "ParentIndex")
-      print("Parsed reverse configuration table")
+      cat("Parsed reverse configuration table\n")
     }
     
     #read in, compensate, transform, and format fcs file
-    fcsTransInput <- FCSTransInput(rawfcs_path)
+    fcsTransInput <- FCSTransInput(rawfcs_path, debugmode=debugmode)
     
-    fcs_raw <- fcsTransInput$rawflowFrame
-    colsToUse <- fcsTransInput$colsToUse
-    fcs <- fcsTransInput$processedFlowFrame
+    fcs_raw = fcsTransInput$rawflowFrame
+    colsToUse = fcsTransInput$colsToUse
+    fcs = fcsTransInput$processedFlowFrame
     
     #Locate columns (marker channels) used for clustering
     colsToUseList <- list()
@@ -210,26 +211,31 @@ DAFi <-
               xdims = xdims,
               ydims = ydims,
               method = method,
-              initializer = initializer
+              initializer = initializer,
+              debugmode=debugmode
             )
         }
         
         #check if using cluster filtering
         if (config_table$FilterType[i] == 0) {
+          if(isTRUE(debugmode)){cat("Filtering by cluster centroids...")}
           pop_cluster_list[[i]] <-
             filter(clusterResults[[parentPopID]]$flowFrame, gate_list[[i]])
           temp_include_table = pop_cluster_list[[i]]@subSet
           
+          if(isTRUE(debugmode)){cat("define logical vector via gating on centroids...")}
           pop_filt_list[[i]] <-
             apply(as.array(clusterResults[[parentPopID]]$mapping), 1, function(x)
               temp_include_table[x])
           
+          if(isTRUE(debugmode)){cat("events subsetting...\n")}
           fcs_pop_list[[i]] <-
             Subset(fcs_current, pop_filt_list[[i]])
           
           #plotting 2D scatter plots for filtered population and cluster centroids
           if (plotCentroids == TRUE) {
             if (nrow(fcs_pop_list[[i]]) > 0) {
+              if(isTRUE(debugmode)){cat("Plotting 2D scatter plot...")}
               png(
                 paste(currentPopID, "_plot.png", sep = ""),
                 width = 4,
@@ -250,6 +256,7 @@ DAFi <-
               #xyplot(data=fcs_pop_list[[i]], channel.x=xaxis, channel.y=yaxis, smooth = FALSE)
               dev.off()
               if (!is.null(pop_cluster_list[[i]])) {
+                if(isTRUE(debugmode)){cat("Plotting cluster centroids overlay...\n")}
                 png(
                   paste(currentPopID, "_clusters.png", sep = ""),
                   width = 4,
@@ -278,6 +285,7 @@ DAFi <-
                 dev.off()
               }
             } else if (!is.null(clusterResults[[parentPopID]]$flowFrame)) {
+              if(isTRUE(debugmode)){cat("No cell found for ", currentPopID, ";plotting cluster centroids overlay of parent population...\n")}
               png(
                 paste(currentPopID, "_noevents_from_parent.png", sep = ""),
                 width = 4,
@@ -326,6 +334,7 @@ DAFi <-
           
         } else {
           #using bisecting approach to filter on the cell events directly via the specified gates
+          if(isTRUE(debugmode)){cat("Filtering by events (bisecting)...\n")}
           pop_filt_list[[i]] <- filter(fcs_current, gate_list[[i]])
           pop_cluster_list[[i]] <-
             filter(clusterResults[[parentPopID]]$flowFrame, gate_list[[i]])
@@ -363,6 +372,7 @@ DAFi <-
         
       } else if (config_table$FilterType[i] == 2) {
         #simulating the slope method from the original DAFi implementation (to be updated with polygon method in the future)
+        if(isTRUE(debugmode)){cat("Filtering by events slope definition...\n")}
         gate_mat_list[[i]] <-
           matrix(c(
             0,
@@ -448,7 +458,7 @@ DAFi <-
               xdims = xdims,
               ydims = ydims,
               method = method,
-              initializer = initializer
+              initializer = initializer, debugmode=debugmode
             )
         }
       }

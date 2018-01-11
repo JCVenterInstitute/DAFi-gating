@@ -31,6 +31,7 @@
 #' 
 #' # FlowSOM
 #' clusterResult <- cluster_run(sampleflowFrame, colsToUse=c(9,12,14:18), xdims=20, ydims=25, method='fSOM')
+#' @export
 cluster_run <-
   function(fcs_in,
            colsToUse,
@@ -38,7 +39,11 @@ cluster_run <-
            xdims = 10,
            ydims = 10,
            method = "Kmeans",
-           initializer = "kmeans++") {
+           initializer = "kmeans++",
+           debugmode = FALSE) {
+    
+    cat("Clustering via", method, "\n")
+    
     clusterResult <-
       list(
         Object = NULL,
@@ -59,10 +64,13 @@ cluster_run <-
           nClus = 10,
           seed = 42
         )
+      if(isTRUE(debugmode)){print("create mapping")}
       clusterResult$mapping <-
         clusterResult$Object$FlowSOM$map$mapping[, 1]
+      if(isTRUE(debugmode)){print("create centroids")}
       clusterResult$centroids <-
         clusterResult$Object$FlowSOM$map$medianValues
+      if(isTRUE(debugmode)){print("create cluster flowFrame")}
       clusterResult$flowFrame <- flowFrame(clusterResult$centroids)
     } else if (method == "Kmeans") {
       data = exprs(fcs_in)
