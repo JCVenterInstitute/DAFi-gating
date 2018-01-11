@@ -1,17 +1,15 @@
-# DAFi-gating
 # User-directed unsupervised identification of cell populations
-	
-	DAFi: User-directed unsupervised filtering and identification of cell populations from flow cytometry data
-	
-	Author: Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., ichang@jcvi.org, and Bob Sinkovits, Ph.D., sinkovit@sdsc.edu
-	
-	Copyright: Author and J. Craig Venter Institute
-	
-	Paper link: https://www.biorxiv.org/content/early/2017/09/26/193912
-	
-	Usage: dafi_gating data_file gating_spec_file filter_spec_file initial_max_num_clusters re_cluster_max_num_clusters num_threads seed
-	
-	data_file is a tab delimited file with compensated and transformed values (please use FCSTrans to convert FCS files to tab delimited file https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3932304/) 
+## Using the DAFi C
+### Author: Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., ichang@jcvi.org, and Bob Sinkovits, Ph.D., sinkovit@sdsc.edu
+### Copyright: Author and J. Craig Venter Institute
+### Paper link: https://www.biorxiv.org/content/early/2017/09/26/193912
+
+### Usage: 
+```
+dafi_gating data_file gating_spec_file filter_spec_file initial_max_num_clusters re_cluster_max_num_clusters num_threads seed
+```
+
+data_file is a tab delimited file with compensated and transformed values (please use FCSTrans to convert FCS files to tab delimited file https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3932304/) 
 	
 	gating_spec_file: a 11-column tab delimited file, for recursive data filtering
 	Pop_ID	DimensionX	DimensionY	Min_X	Max_X	Min_Y	Max_Y	Parent_ID	Cluster_Type(0: Clustering; 1: Bisecting; 2: Slope-based)	Visualize_or_Not	Recluster_or_Not	Cell_type(optional)
@@ -26,14 +24,16 @@
 	filter_spec file: a 11-column tab delimited file with the same format, but for reversed filtering:
 	1       1       4       0       85      100     200     0       0       1	0
 
-	initial_max_num_clusters is the maximum number of clusters for the initial clustering before filtering (default: 500)
-	re_cluster_max_num_clusters is the maximum number of clusters for all of the subsequent re-clustering steps (default: 1000)
-	num_threads is the number of threads available to partition the events for parallelization (default: 8)
-	seed is the initial seed number for the random number generator used in the cluster seeding (default: 2)
+1) initial_max_num_clusters is the maximum number of clusters for the initial clustering before filtering (default: 500)
+2) re_cluster_max_num_clusters is the maximum number of clusters for all of the subsequent re-clustering steps (default: 1000)
+3) num_threads is the number of threads available to partition the events for parallelization (default: 8)
+4) seed is the initial seed number for the random number generator used in the cluster seeding (default: 2)
 	
-Example:
-
+## Example:
+```
 dafi_gating preprocessed_fcs.txt forward.config reverse.config 500 1000 24 2
-
+```
 Please compile with intel optimization flags:
-	icc -O3 -xHost -o dafi_gating DAFi-gating_omp.c -lm
+```
+icc -O3 -xHost -o dafi_gating DAFi-gating_omp.c -lm
+```
