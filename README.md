@@ -22,18 +22,18 @@ There are two concurrent implementations of the DAFi framework, one for the HPC 
 	
 2) inclusion.config: a 11-column tab delimited file, for recursive data filtering
 
-	Pop_ID	DimensionX	DimensionY	Min_X	Max_X	Min_Y	Max_Y	Parent_ID	Cluster_Type(0: Clustering; 1: Bisecting; 2: Slope-based)	Visualize_or_Not	Recluster_or_Not	Cell_type(optional)
-	1       1       4       20      70      5       55      0       0       0	0	Lymph
-	2       1       2       30      90      0       110     1       1       0	1	Singlets
-	3       4	5	100     150     80      140     2       2       1	1	LiveSinglets
-	4       19      17      76      140     106     200     3       1       0	1	CD4T
-	5       19      17      76      140     55      105     3       1       0	0	CD8T
-	6       8       7       81      140     50      120     3       1       0	0	CD4Treg
-	7       8       7       20      80      25      90      3       1       0	0	CD4Tnonreg
+|Pop_ID|DimensionX|DimensionY|Min_X|Max_X|Min_Y|Max_Y|Parent_ID|Cluster_Type(0: Clustering; 1: Bisecting; 2: Slope-based)|Visualize_or_Not|Recluster_or_Not|Cell_Phenotype(optional)|
+|1|1|4|20|70|5|55|0|0|0|0|Lymphocyte|
+|2|1|2|30|90|0|110|1|1|0|1|Singlets|
+|3|4|5|100|150|80|140|2|2|1|1|LiveSinglets|
+|4|19|17|76|140|106|200|3|1|0|1|CD4T|
+|5|19|17|76|140|55|105|3|1|0|0|CD8T|
+|6|8|7|81|140|50|120|3|1|0|0|CD4Treg|
+|7|8|7|20|80|25|90|3|1|0|0|CD4Tnonreg|
 	
 3) exclusion.config: a 11-column tab delimited file with the same format, but for reversed filtering:
 
-	1       1       4       0       85      100     200     0       0       1	0
+|1|1|4|0|85|100|200|0|0|1|0|
 
 ## Get the package
 
