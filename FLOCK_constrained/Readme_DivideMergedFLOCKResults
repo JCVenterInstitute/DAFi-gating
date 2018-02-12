@@ -1,0 +1,28 @@
+This program serves as one step in the cross-sample mapping pipeline. It maps FLOCK results from merged aligned data to the
+original individual files.
+
+This program reads in a FLOCK result file and two folders. One folder (after alignment) contains the aligned individual files
+(Tab-delimited TXT files), and the other contains the original individual files (before alignment).
+The program outputs in the before alignment folder a set of sub-folders, each contains FLOCK results for one original 
+individual file. These result files can be copied to the visualization interface for generating dot plots and summary 
+statistics.
+
+The file names and number of files in both folders need to be exactly the same.
+
+Another input to this program is the number of clusters in the FLOCK results from merged aligned data.
+
+The algorithm procedure is:
+
+Read the FLOCK result file into memory, and the header. The result file is for a concatenation of all aligned individual files.
+
+Enter the folder containing the individual aligned files, reads the number of files
+Initiate a loop for each file
+Open the file, reads the first and the second rows
+Extract the population_ID from the FLOCK result file by searching for the first and the second rows.
+
+Enter the folder containing the individual unaligned files, use the population_ID to generate other result files (MFI, profile,
+percentage etc.), output files of each file into a different folder.
+
+Date: May 15, 2015 (written in one day!!)
+Author: Yu "Max" Qian, Ph.D.
+Contact: mqian@jcvi.org or qianyu_cs@yahoo.com
