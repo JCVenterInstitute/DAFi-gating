@@ -1,0 +1,43 @@
+FLOCK-based data filtering
+	
+	Author: Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com
+	
+	Copyright: Author and J. Craig Venter Institute
+	
+	Development time: August 15, 2015
+	
+	Usage: DAFi_FLOCKfiltering data_file num_bins density_threshold max_num_clusters filter_spec_file inside_proportion
+	
+	data_file is a tab delimited file with compensated and transformed values.
+	num_bins: 6-30
+	density_threshold: 3-50
+	max_num_clusters: upper bound of the number of clusters
+
+	Setting num_bins or density_threshold 0, the program will automatically decide the thresholds
+
+	Recommend use: fixing the num_bins and upper bound of number of clusters, but let the program to
+	select the density threshold
+
+	filter_spec file: a three column tab delimited file: dimension ID in the data file, lower bound, and upper bound,
+	in terms of the IDs of the bins.
+	To follow DAG so that results can be compared, each dimension is divided into 200 bins.
+	For example, if the data file header is FSC, SSC, CD3, CD4, CD25, the following filter_spec_file will get the
+	T lymphocytes
+	1	55	110
+	2	5	75
+	3	80	180
+
+	The algorithm is:
+	Step 1: Run FLOCK to identify all clusters in full dimensional space
+	Step 2: Count the number of cells inside the filter spec hyper-region for each cell cluster
+	Step 3: If the majority of a cell cluster is within the hyper-region, keep the cells within the region in the
+	filtered data, the cells out of the region will be filtered out.
+	Step 4: If the minority of a cell cluster is within the hyper-region, the whole cluster is filtered out.
+
+	This is because the hyper-rectangle is usually larger than the boundary of the filtered data.
+
+	Finally two clusters will be generated for visualization: 1 (red) is the filtered data and 2 (yellow)
+	is the data that is filtered out.
+
+	The proportion of each original FLOCK population inside the specified hyper-rectangle will also be output
+	The filtered data (through merging the events from FLOCK populations) will also be output
