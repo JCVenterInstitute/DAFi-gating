@@ -1,0 +1,39 @@
+FLOCK data clustering with user specified constraints about boundaries of positive and negative
+	
+	Author: Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com
+	
+	Copyright: Author and J. Craig Venter Institute
+	
+	Development time: August 25, 2015
+	
+	Usage: FLOCK_constrained data_file num_bins density_threshold max_num_clusters profile_spec_file pop_proportion_threshold pop_range_distance_threshold
+	
+	data_file is a tab delimited file with compensated and transformed values.
+	num_bins: 6-30
+	density_threshold: 3-50
+	max_num_clusters: upper bound of the number of clusters
+
+	Setting num_bins or density_threshold 0, the program will automatically decide the thresholds
+
+	Recommend use: fixing the num_bins and upper bound of number of clusters, but let the program to
+	select the density threshold
+
+	profile_spec_file: a two column tab delimited file: dimension ID in the data file, separating_coordinate.
+	
+	For example, if the data file header is CD3, CD4, CD25, smaller than 50 is CD3-; larger than 50 is CD3+
+	1	50
+	2	75
+	3	80
+
+	The algorithm is:
+	Step 1: Run FLOCK to identify all clusters in full dimensional space
+	Step 2: For each FLOCK population 
+	For each dimension
+	Calcluate its proportion outside each dimension separatining_coordinate
+	Calculate the value range of the outside part on each dimension
+	Check whether the proportion is smaller than the proportion_threshold AND the range of the dimension is smaller than the range_distance_threshold
+	if yes, check the next cell population
+	otherwise, generate a new centroid (the centroid of the outside events) on this dimension; check the next dimension
+	Step 3: Run K-means based on the new set of centroids; Output the final result
+	
+	A new profile file with the negative/positive for each population on each dimension will be generated.
