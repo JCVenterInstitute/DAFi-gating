@@ -1,0 +1,43 @@
+This program needs the following inputs:
+a) the FLOCK results from a file merged from the filtered data of a set of files
+b) The set of filtered files
+c) the ORIGINAL set of files before filtering
+d) An integer specifying which cell population to output for visualization (e.g., by DAG)
+
+This program outputs:
+a) a percentage table (number of events in each cell population divided by the number of events in the ORIGINAL file)
+with rows as the cell populations (number of cell populations is the number of rows) 
+and the columns the file_IDs (number of files is the number of columns)
+b) a folder contains the cell population for each of the filtered file (in csv format for DAG visualization of each population)
+c) a folder contains the flock_results.txt for each of the original file (make the data discarded the white background (cluster_ID=1) for Python visualization of the overview of populations)
+
+The use of the program is:
+DivideMergedFLOCKResults_adv flock_results.txt folder_filtered_data folder_original_data Population_ID
+
+In the output, a TXT table named folder_percentage.txt will be created.
+A folder folder_name_population_ID will be created. Inside the folder you will get
+File1Name_filt.csv
+File2Name_filt.csv
+
+A folder folder_name_flock_results will be created. Inside the folder you will get
+File1_flock_results.txt
+File2_flock_results.txt
+
+
+It is important to note that the filtered file can be empty. In such a case, all percentage values will be zero, the population for that
+specific file will also be an empty file.
+
+The utility of including the original file is only to get the size of the original file for calculating the percentage
+
+The way to map the original file and the filtered file is to rely on the filename, the filtered file must be named as originalname_filt.txt
+while the original file is originalname.txt
+
+The way to identify the filtered data in the merged flock_results.txt is relying on two lines of the same values.
+That is, when the filtered file has less than 2 lines, all the output values will be zero.
+
+There needs a step to read through the merged flock_results.txt to get the number of clusters so that the memory can be allocated for
+the output percentage table.
+
+Date: April 22, 2016 
+Author: Yu "Max" Qian, Ph.D.
+Contact: mqian@jcvi.org or qianyu_cs@yahoo.com
