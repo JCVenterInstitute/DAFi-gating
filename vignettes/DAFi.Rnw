@@ -10,7 +10,7 @@
 \usepackage[latin9]{inputenc}
 \usepackage{babel}
 <<style-Sweave, eval=TRUE, echo=FALSE, results=tex>>=
-#BiocStyle::latex()
+BiocStyle::latex()
 @ 
 
 \begin{document}
@@ -66,18 +66,13 @@ SampleData <- system.file("extdata", "sample.fcs",package="DAFi")
 inclusionConfig <- system.file("extdata", "inclusion.config",package="DAFi")
 exclusionConfig <- system.file("extdata", "exclusion.config",package="DAFi")
 
-# DAFi with Kmeans clustering
 DAFi(SampleData, inclusionConfig, exclusionConfig, 
-		# select method:
 		method = "Kmeans",
     clusterSize = 50, initializer = "kmeans++"
 		)
 
-# DAFi with fSOM clustering		
 DAFi(SampleData, inclusionConfig, exclusionConfig, 
-		# select method:
 		method = "fSOM",
-    # FlowSOM options:
     xdims = 5, ydims = 5
 		)
 @
