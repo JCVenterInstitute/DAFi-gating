@@ -10,7 +10,7 @@
 \usepackage[latin9]{inputenc}
 \usepackage{babel}
 <<style-Sweave, eval=TRUE, echo=FALSE, results=tex>>=
-
+BiocStyle::latex()
 @ 
 
 \begin{document}
