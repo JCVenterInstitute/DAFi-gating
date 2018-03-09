@@ -97,15 +97,15 @@ and standard deviation of one. However, specific scaling parameters can be set
 \noindent 
 <<>>=
 
-library(DAFi)
-
-SampleData <- system.file("extdata", "sample.fcs",package="DAFi")
-inclusionConfig <- system.file("extdata", "inclusion.config",package="DAFi")
-exclusionConfig <- system.file("extdata", "exclusion.config",package="DAFi")
-
-ptm <- proc.time()
-DAFi(SampleData, inclusionConfig, exclusionConfig, xdims=5, ydims=8, method='fSOM', smoothPlot = TRUE)
-proc.time() - ptm
+# library(DAFi)
+# 
+# SampleData <- system.file("extdata", "sample.fcs",package="DAFi")
+# inclusionConfig <- system.file("extdata", "inclusion.config",package="DAFi")
+# exclusionConfig <- system.file("extdata", "exclusion.config",package="DAFi")
+# 
+# ptm <- proc.time()
+# DAFi(SampleData, inclusionConfig, exclusionConfig, xdims=5, ydims=8, method='fSOM', smoothPlot = TRUE)
+# proc.time() - ptm
 @
 
 \noindent \medskip{}
