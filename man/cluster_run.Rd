@@ -4,7 +4,7 @@
 \alias{cluster_run}
 \title{Clustering algorithm wrapper function}
 \usage{
-cluster_run(fcs_in, colsToUse, k = 100, xdims = 10, ydims = 10,
+cluster_run(fcs_in, colsToUse, clusterSize = 100, xdims = 10, ydims = 10,
   method = "Kmeans", initializer = "kmeans++", debugmode = FALSE)
 }
 \arguments{
@@ -12,7 +12,7 @@ cluster_run(fcs_in, colsToUse, k = 100, xdims = 10, ydims = 10,
 
 \item{colsToUse}{select the channels to use for the clustering: c(7,8,9,10)}
 
-\item{k}{select the number of desired clusters for the Kmeans-type clustering algorithms (default 100)}
+\item{clusterSize}{select the number of desired clusters for the Kmeans-type clustering algorithms (default 100)}
 
 \item{xdims}{number of SOM nodes in x direction for FlowSOM algorithm (default 10)}
 
@@ -36,15 +36,20 @@ A \code{list} with four items: the first is the clustering result object directl
 Will generate the clustering results necessary for downstream filtering/gating and plotting
 }
 \examples{
+
+# Read in file and create flowFrame
+SampleData <- system.file("extdata", "sample.fcs",package="DAFi")
+SampleflowFrame <- suppressWarnings(flowCore::read.FCS(SampleData))
+
 # Kmeans with random initializer
-clusterResult <- cluster_run(sampleflowFrame, colsToUse=c(9,12,14:18), k=500,
+clusterResult <- cluster_run(SampleflowFrame, colsToUse=c(9,12:16), clusterSize=50,
                       method="Kmeans", initializer="random")
                       
 # Kmeans with kmeans++ initializer
-clusterResult <- cluster_run(sampleflowFrame, colsToUse=c(9,12,14:18), k=500)
+clusterResult <- cluster_run(SampleflowFrame, colsToUse=c(9,12:16), clusterSize=50)
 
-# FlowSOM
-clusterResult <- cluster_run(sampleflowFrame, colsToUse=c(9,12,14:18), xdims=20, ydims=25, method='fSOM')
+# FlowSOM example
+clusterResult <- cluster_run(SampleflowFrame, colsToUse=c(9,12:16), xdims=5, ydims=5, method='fSOM')
 }
 \seealso{
 \code{\link{DAFi}}

@@ -4,10 +4,10 @@
 \alias{DAFi}
 \title{Run the DAFi algorithm}
 \usage{
-DAFi(rawfcs_path, config_path, reverse_path = NULL, k = 100, xdims = 10,
-  ydims = 10, excludeGated = FALSE, method = "Kmeans",
+DAFi(rawfcs_path, config_path, reverse_path = NULL, clusterSize = 100,
+  xdims = 10, ydims = 10, excludeGated = FALSE, method = "Kmeans",
   initializer = "kmeans++", plotCentroids = TRUE, writeOutput = TRUE,
-  debugmode = FALSE)
+  smoothPlot = FALSE, debugmode = FALSE)
 }
 \arguments{
 \item{rawfcs_path}{path to raw fcs file}
@@ -16,7 +16,7 @@ DAFi(rawfcs_path, config_path, reverse_path = NULL, k = 100, xdims = 10,
 
 \item{reverse_path}{path to DAFi cell gating hierarchy configuration file (exclusion gates)}
 
-\item{k}{specify number of clusters for Kmeans type algorithms (default 100)}
+\item{clusterSize}{specify number of clusters for Kmeans type algorithms (default 100)}
 
 \item{xdims}{number of SOM nodes in x direction for FlowSOM algorithm (default 10)}
 
@@ -33,18 +33,26 @@ DAFi(rawfcs_path, config_path, reverse_path = NULL, k = 100, xdims = 10,
 \item{writeOutput}{whether or not to generate output events and percentage tables}
 }
 \description{
-Method to run general DAFi workflow. 
+Method to run general DAFi workflow.
 Will transform the data via FCSTrans and scale each channel to the range 0-4096 by default.
 }
 \examples{
+
+# Read in file and create flowFrame
+SampleData <- system.file("extdata", "sample.fcs",package="DAFi")
+SampleflowFrame <- suppressWarnings(flowCore::read.FCS(SampleData))
+inclusionConfig <- system.file("extdata", "inclusion.config",package="DAFi")
+exclusionConfig <- system.file("extdata", "exclusion.config",package="DAFi")
+
 # Minimal parameter run (all defaults)
-DAFi("SampleData.fcs","include.config")
+DAFi(SampleData,inclusionConfig)
 
 # Or specify method and options for FlowSOM clustering
-DAFi("SampleData.fcs","include.config","exclude.config", xdims=20, ydims=25, method='fSOM')
+DAFi(SampleData,inclusionConfig,exclusionConfig, xdims=5, ydims=5, method='fSOM')
 
-#' # Or specify method and options for Kmeans++ clustering
-DAFi("SampleData.fcs","include.config","exclude.config", k=500, method='Kmeans', initializer='kmeans++')
+# Or specify method and options for Kmeans++ clustering
+DAFi(SampleData,inclusionConfig",exclusionConfig", clusterSize=25, method='Kmeans', initializer='kmeans++')
+
 
 }
 \seealso{
