@@ -10,7 +10,7 @@
 \usepackage[latin9]{inputenc}
 \usepackage{babel}
 <<style-Sweave, eval=TRUE, echo=FALSE, results=tex>>=
-BiocStyle::latex()
+#BiocStyle::latex()
 @ 
 
 \begin{document}
@@ -39,7 +39,20 @@ J. Craig Venter Institute
 }
 \par\end{center}
 
-The \Biocpkg{DAFi} package provides a new framework for cell population identification for flow cytometry (FCM) data. The framework is compatible with many existing clustering algorithms such as Kmeans, Kmeans++, mini-batch Kmeans, gaussian mixture models, k-medoids, self-organizing map, etc, and allows user to input user defined gating hierarchy to convert the aforementioned unsupervised algorithms into powerful semi-supervised and automatic cell population identification approach. First, the data is read and preprocessed, then configuration files are parsed and implemented as user defined gating directions. Clustering algorithm choosen in the initiation is then applied to the data events of the whole FCM data at the start of the iterative gating/filtering loop, and optionally again at each specified population subset (reclustering). At each gating step, the user can specify to apply bisecting (events filtering based on user defined boundaries just like in manual gating), slope-based (events filtering based on user defined slopes), or cluster centroids based filtering (filtering all events members of a cluster based on their centroid's inclusion or exclusion by the user defined gates). Outputs include population events and percentages table, as well as an events printout table consisting of all event's transformed channel values and population membership info for external analysis and plotting. Several built-in plotting options are also available, e.g. 2D dot plots of the user specified gating channels, and centroids overlay to the 2D dot plots.
+The DAFi package provides a new framework for cell population identification
+for flow cytometry (FCM) data. The framework is compatible with many existing clustering
+algorithms such as Kmeans, Kmeans++, mini-batch Kmeans, gaussian mixture models, k-medoids, self-organizing map, etc, 
+and allows user to input user defined gating hierarchy to convert the aforementioned unsupervised 
+algorithms into powerful semi-supervised and automatic cell population identification approach.
+First, the data is read and preprocessed, then configuration files are parsed and implemented as user defined gating directions. 
+Clustering algorithm choosen in the initiation is then applied to the data events of the whole FCM data at the start of the iterative
+gating/filtering loop, and optionally again at each specified population subset (reclustering). At each gating step, the user can specify
+to apply bisecting (events filtering based on user defined boundaries just like in manual gating), slope-based (events filtering based on
+user defined slopes), or cluster centroids based filtering (filtering all events members of a cluster based on their centroid's inclusion
+or exclusion by the user defined gates). Outputs include population events and percentages table, as well as an events printout table
+consisting of all event's transformed channel values and population membership info for external analysis and plotting.
+Several built-in plotting options are also available, e.g. 2D dot plots of the user specified gating channels,
+and centroids overlay to the 2D dot plots.
 \bigskip{}
 \bigskip{}
 
@@ -52,14 +65,14 @@ library(DAFi)
 
 DAFi(raw_fcs_path, inclusion_config_path, exclusion_config_path, 
 		# select method:
-		method = "Kmeans"
+		method = "Kmeans",
                 # Kmeans options:
                 k = 100, initializer = "kmeans++",
                 # FlowSOM options:
                 xdims = 10, ydims = 10,
 		# output options:
 		plotCentroids = TRUE,
-		writeOutput = TRUE
+		writeOutput = TRUE,
 		# experimental excluding gated channels in reclustering
 		excludeGated = FALSE
 		)
@@ -83,17 +96,16 @@ and standard deviation of one. However, specific scaling parameters can be set
 
 \noindent 
 <<>>=
-set.seed(42)
-library(flowCore)
+
 library(DAFi)
 
-fileName <- system.file("extdata","lymphocytes.fcs",
-                        package="DAFi")
-fSOM <- ReadInput(fileName,compensate = TRUE,transform = TRUE, 
-                    toTransform=c(8:18),scale = TRUE)
+SampleData <- system.file("extdata", "sample.fcs",package="DAFi")
+inclusionConfig <- system.file("extdata", "inclusion.config",package="DAFi")
+exclusionConfig <- system.file("extdata", "exclusion.config",package="DAFi")
 
-ff <- suppressWarnings(flowCore::read.FCS(fileName))
-fSOM <- ReadInput(ff,compensate = TRUE,transform = TRUE, scale = TRUE)
+ptm <- proc.time()
+DAFi(SampleData, inclusionConfig, exclusionConfig, xdims=5, ydims=8, method='fSOM', smoothPlot = TRUE)
+proc.time() - ptm
 @
 
 \noindent \medskip{}

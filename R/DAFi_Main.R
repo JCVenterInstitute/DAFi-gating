@@ -573,6 +573,7 @@ DAFi <-
       
       
       cdata <- exprs(fcs)
+      target <- ncol(cdata) - 1
       cdata <- cbind(cdata[,1:target,drop=F], popMatrix, cdata[,(target+1):ncol(cdata),drop=F], finalPopMatrix)
       
       dafi_filename=paste(strsplit(tail(unlist(strsplit(rawfcs_path, .Platform$file.sep)),n=1),"[.]")[[1]][1],"dafi","txt",sep=".")
