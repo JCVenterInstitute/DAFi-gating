@@ -1,11 +1,10 @@
 devtools::document()
 devtools::check()
 devtools::build()
-
-
-devtools::install_github("JCVenterInstitute/DAFi-gating", build_vignettes = TRUE)
+devtools::install_github("JCVenterInstitute/DAFi-gating", build_vignettes = FALSE, force = FALSE)
 
 library(DAFi)
 SampleData <- system.file("extdata", "sample.fcs",package="DAFi")
+SampleflowFrame <- suppressWarnings(flowCore::read.FCS(SampleData))
 inclusionConfig <- system.file("extdata", "inclusion.config",package="DAFi")
 exclusionConfig <- system.file("extdata", "exclusion.config",package="DAFi")
