@@ -114,8 +114,13 @@ FCSTransInput <- function(rawfcs_path, debugmode=FALSE) {
   
   if(isTRUE(debugmode)){print("Reading FCS file")}
   #Read in input raw fcs file
+  
+  tryCatch({
   fcs_raw <-
     suppressWarnings(read.FCS(rawfcs_path))
+  }, error = function(ex) {
+    print (paste("    ! Error in reading FCS file !", ex))
+  })
   
   if(isTRUE(debugmode)){print("Running compensation...")}
   #Check and apply compensation
@@ -154,6 +159,10 @@ FCSTransInput <- function(rawfcs_path, debugmode=FALSE) {
   fcs <- transform(fcs_raw, scattT)
   #fcs <- transform(fcs, timeT)
   fcs <- transform(fcs, lgcl)
+  #add Event column to index events
+  mm<-as.matrix(seq.int(nrow(fcs)))
+  colnames(mm)<-c("Event")
+  fcs<-cbind2(fcs,mm)
   
   output$rawflowFrame <- fcs_raw
   output$colsToUse <- colsToUse
