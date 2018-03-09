@@ -56,9 +56,9 @@ and centroids overlay to the 2D dot plots.
 \bigskip{}
 \bigskip{}
 
-\section{The easy way}
-The easiest way to use this package is using the wrapper function 
-\Rfunction{DAFi}. It outputs the population events and percentages tables and additional 2D plots as requested.
+\section{Quick Start}
+
+\Rfunction{DAFi} outputs the population events and percentages tables and additional 2D plots as requested.
 
 <<fig=TRUE>>=
 library(DAFi)
@@ -69,9 +69,9 @@ exclusionConfig <- system.file("extdata", "exclusion.config",package="DAFi")
 
 DAFi(SampleData, inclusionConfig, exclusionConfig, 
 		# select method:
-		method = "Kmeans",
-                # Kmeans options:
-                k = 100, initializer = "kmeans++",
+		method = "fSOM",
+                # kmeans options:
+                #k = 100, initializer = "kmeans++",
                 # FlowSOM options:
                 xdims = 10, ydims = 10,
 		# output options:
@@ -101,28 +101,17 @@ and standard deviation of one. However, specific scaling parameters can be set
 \noindent 
 <<>>=
 
-# library(DAFi)
-# FlowSOM example
 
-# 
-# ptm <- proc.time()
-# DAFi(SampleData, inclusionConfig, exclusionConfig, xdims=5, ydims=8, method='fSOM', smoothPlot = TRUE)
-# proc.time() - ptm
 @
 
 \noindent \medskip{}
 
-This function returns a DAFi object, which is actually a \Rclass{list} 
-containing several parameters. The data is stored as a matrix in 
-\Rcode{\$data}, and all parameter settings to read the data are also stored. 
-The begin and end indices of the subsets from the different files can be 
-found in \Rcode{\$metadata}.
+
 
 
 \section{Summary}
 
-In summary, the DAFi package provides some new ways to look at cytometry
-data.
+
 \end{document}
 
 <<>>=
