@@ -63,7 +63,11 @@ The easiest way to use this package is using the wrapper function
 <<fig=TRUE>>=
 library(DAFi)
 
-DAFi(raw_fcs_path, inclusion_config_path, exclusion_config_path, 
+SampleData <- system.file("extdata", "sample.fcs",package="DAFi")
+inclusionConfig <- system.file("extdata", "inclusion.config",package="DAFi")
+exclusionConfig <- system.file("extdata", "exclusion.config",package="DAFi")
+
+DAFi(SampleData, inclusionConfig, exclusionConfig, 
 		# select method:
 		method = "Kmeans",
                 # Kmeans options:
@@ -98,10 +102,8 @@ and standard deviation of one. However, specific scaling parameters can be set
 <<>>=
 
 # library(DAFi)
-# 
-# SampleData <- system.file("extdata", "sample.fcs",package="DAFi")
-# inclusionConfig <- system.file("extdata", "inclusion.config",package="DAFi")
-# exclusionConfig <- system.file("extdata", "exclusion.config",package="DAFi")
+# FlowSOM example
+
 # 
 # ptm <- proc.time()
 # DAFi(SampleData, inclusionConfig, exclusionConfig, xdims=5, ydims=8, method='fSOM', smoothPlot = TRUE)
