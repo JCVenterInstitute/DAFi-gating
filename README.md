@@ -80,6 +80,23 @@ icc -O3 -xHost -o dafi_gating DAFi-gating_omp.c -lm
 
 In addition, precompiled binaries without enhanced optimizations is available under [releases](https://github.com/JCVenterInstitute/DAFi-gating/releases)
 
-### DAFi R and C docker image
-If you have docker containerization system enabled, you can download the prebuilt images and run the DAFi as a containized command-line tool. Please see the docker folder under this repository.
+### DAFi R docker image
+If you have docker containerization system enabled, you can download the pre-configured Dockerbuild and build the R-DAFi dockerized container that will allow you to run a local R-studio server with all necessary packages.
 
+Move the Dockerbuild file to a directory, then run with:
+
+```
+docker build -t "r_dafi:r_dafi"
+```
+
+after the image is built, instantiate it with (change password to your own):
+
+```
+docker run -d -p 8787:8787 -e PASSWORD=dafi -e ROOT=TRUE r_dafi:r_dafi
+``` 
+
+then open the Rstudio on localhost via a webbrowser:
+
+http://localhost:8787
+
+and log in using user name rstudio and password dafi
