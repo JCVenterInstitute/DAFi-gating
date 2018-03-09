@@ -6,7 +6,7 @@
 #' @param rawfcs_path   path to raw fcs file
 #' @param config_path   path to DAFi cell gating hierarchy configuration file (inclusion gates)
 #' @param reverse_path  path to DAFi cell gating hierarchy configuration file (exclusion gates)
-#' @param k             specify number of clusters for Kmeans type algorithms (default 100)
+#' @param clusterSize   specify number of clusters for Kmeans type algorithms (default 100)
 #' @param xdims         number of SOM nodes in x direction for FlowSOM algorithm (default 10)
 #' @param ydims         number of SOM nodes in y direction for FlowSOM algorithm (default 10)
 #' @param excludeGated  *experimental* set TRUE to exclude previously gated channels in reclustering (default FALSE)
@@ -25,7 +25,7 @@
 #' DAFi(SampleData,inclusionConfig,exclusionConfig, xdims=20, ydims=25, method='fSOM')
 #'
 #' #' # Or specify method and options for Kmeans++ clustering
-#' DAFi(SampleData,inclusionConfig",exclusionConfig", k=500, method='Kmeans', initializer='kmeans++')
+#' DAFi(SampleData,inclusionConfig",exclusionConfig", clusterSize=500, method='Kmeans', initializer='kmeans++')
 #'
 #'
 #' @import methods
@@ -41,7 +41,7 @@ DAFi <-
   function(rawfcs_path,
            config_path,
            reverse_path = NULL,
-           k = 100,
+           clusterSize = 100,
            xdims = 10,
            ydims = 10,
            excludeGated = FALSE,
@@ -221,7 +221,7 @@ DAFi <-
             cluster_run(
               currentFlowFrame,
               colsToUseList[[1]],
-              k = k,
+              clusterSize = clusterSize,
               xdims = xdims,
               ydims = ydims,
               method = method,
@@ -537,11 +537,13 @@ DAFi <-
         if (is.null(clusterResults[[currentPopID]]$Object))
         {
           print(paste("Reclustering on", currentPopID))
+          print(paste("cluster size = ", clusterSize, "number of events = ", nrow(popFlowFrameList[[i]])))
+          
           clusterResults[[currentPopID]] <-
             cluster_run(
               popFlowFrameList[[i]],
               colsToUseList[[i]],
-              k = k,
+              clusterSize = clusterSize,
               xdims = xdims,
               ydims = ydims,
               method = method,

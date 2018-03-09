@@ -4,7 +4,7 @@
 #'
 #' @param fcs_in    compensated and transformed FCS in the flowFrame format as input
 #' @param colsToUse select the channels to use for the clustering: c(7,8,9,10)
-#' @param k         select the number of desired clusters for the Kmeans-type clustering algorithms (default 100)
+#' @param clusterSize   select the number of desired clusters for the Kmeans-type clustering algorithms (default 100)
 #' @param xdims         number of SOM nodes in x direction for FlowSOM algorithm (default 10)
 #' @param ydims         number of SOM nodes in y direction for FlowSOM algorithm (default 10)
 #' @param method        set clustering algorithm from the following choices: 'Kmeans' (default), 'fSOM'
@@ -23,11 +23,11 @@
 #' 
 #' @examples
 #' # Kmeans with random initializer
-#' clusterResult <- cluster_run(sampleflowFrame, colsToUse=c(9,12,14:18), k=500,
+#' clusterResult <- cluster_run(sampleflowFrame, colsToUse=c(9,12,14:18), clusterSize=500,
 #'                       method="Kmeans", initializer="random")
 #'                       
 #' # Kmeans with kmeans++ initializer
-#' clusterResult <- cluster_run(sampleflowFrame, colsToUse=c(9,12,14:18), k=500)
+#' clusterResult <- cluster_run(sampleflowFrame, colsToUse=c(9,12,14:18), clusterSize=500)
 #' 
 #' # FlowSOM
 #' clusterResult <- cluster_run(sampleflowFrame, colsToUse=c(9,12,14:18), xdims=20, ydims=25, method='fSOM')
@@ -35,7 +35,7 @@
 cluster_run <-
   function(fcs_in,
            colsToUse,
-           k = 100,
+           clusterSize = 100,
            xdims = 10,
            ydims = 10,
            method = "Kmeans",
@@ -77,7 +77,7 @@ cluster_run <-
       clusterResult$Object <-
         KMeans_rcpp(
           data[, colsToUse],
-          clusters = k,
+          clusters = clusterSize,
           num_init = 1,
           max_iters = 100,
           initializer = initializer,
@@ -86,7 +86,7 @@ cluster_run <-
           CENTROIDS = NULL
         )
       clusterResult$mapping <- clusterResult$Object$clusters
-      clusterResult$centroids <- t(sapply(seq(k), function(i) {
+      clusterResult$centroids <- t(sapply(seq(clusterSize), function(i) {
         apply(subset(data, clusterResult$mapping == i),
               2,
               stats::median)
