@@ -5,6 +5,12 @@ RUN apt-get install -y libtiff5-dev
 RUN apt-get install -y libgmp-dev
 RUN apt-get install -y libpng-dev
 
+#for building vignettes
+RUN apt-get install -y texinfo
+RUN apt-get install -y texlive
+RUN apt-get install -y texlive-fonts-extra
+
+
 RUN Rscript -e "source('https://bioconductor.org/biocLite.R')"
 RUN Rscript -e "biocLite('ClusterR')"
 
