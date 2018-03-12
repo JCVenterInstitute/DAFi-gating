@@ -5,7 +5,8 @@ MAINTAINER ichang@jcvi.org
 #setup R configs
 #install libs needed for ClusterR and tex needed for building vignette 
 RUN apt-get update && \
-    apt-get -y install --fix-missing libtiff5-dev libgmp-dev libpng-dev texinfo texlive texlive-fonts-extra
+    apt-get -y install --fix-missing libtiff5-dev libgmp-dev libpng-dev texinfo texlive texlive-fonts-extra && \
+    rm -rf /var/lib/apt/lists/*
 
 
 #install R packages
