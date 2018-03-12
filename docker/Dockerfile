@@ -1,23 +1,21 @@
 FROM bioconductor/release_base2
+
+MAINTAINER ichang@jcvi.org
+
 #setup R configs
-RUN apt-get update 
-RUN apt-get install -y libtiff5-dev
-RUN apt-get install -y libgmp-dev
-RUN apt-get install -y libpng-dev
-
-#for building vignettes
-RUN apt-get install -y texinfo
-RUN apt-get install -y texlive
-RUN apt-get install -y texlive-fonts-extra
+#install libs needed for ClusterR and tex needed for building vignette 
+RUN apt-get update && \
+    apt-get -y install --fix-missing libtiff5-dev libgmp-dev libpng-dev texinfo texlive texlive-fonts-extra
 
 
-RUN Rscript -e "source('https://bioconductor.org/biocLite.R')"
-RUN Rscript -e "biocLite('ClusterR')"
+#install R packages
+RUN Rscript -e "source('https://bioconductor.org/biocLite.R')" && \
+    Rscript -e "biocLite('ClusterR')" && \
+    Rscript -e "biocLite('flowCore')" && \
+    Rscript -e "biocLite('flowViz')" && \
+    Rscript -e "biocLite('FlowSOM')" && \
+    echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile && \
+    Rscript -e "install.packages('devtools')" && \
+    Rscript -e "devtools::install_github('JCVenterInstitute/DAFi-gating', build_vignettes = FALSE)"
 
-RUN Rscript -e "biocLite('flowCore')"
-RUN Rscript -e "biocLite('flowViz')"
-RUN Rscript -e "biocLite('FlowSOM')"
 #RUN export ADD=shiny && bash /etc/cont-init.d/add
-RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
-RUN Rscript -e "install.packages('devtools')"
-RUN Rscript -e "devtools::install_github('JCVenterInstitute/DAFi-gating', build_vignettes = FALSE)"
