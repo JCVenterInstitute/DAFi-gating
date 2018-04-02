@@ -48,7 +48,6 @@ RUN conda install --quiet --yes \
     'r-crayon=1.3*' \
     'r-htmltools=0.3*' \
     'r-htmlwidgets=1.0*' \
-    'rstudio' \
     'r-hexbin=1.27*' && \
     conda install --quiet --yes -c conda-forge jupyter_contrib_nbextensions && \
     conda install --quiet --yes -c conda-forge nbrsessionproxy && \
@@ -56,8 +55,15 @@ RUN conda install --quiet --yes \
     conda install --quiet --yes -c ioam holoviews bokeh && \
     conda remove --quiet --yes --force jupyterlab jupyterlab_launcher qt pyqt && \
     conda clean -tipsy && \
+    yes | pip install genepattern-notebook && \
     # Activate ipywidgets extension in the environment that runs the notebook server
     jupyter nbextension enable --py widgetsnbextension --sys-prefix && \
+    jupyter nbextension install --py genepattern --sys-prefix && \
+    jupyter nbextension enable --py genepattern --sys-prefix && \
+    jupyter serverextension enable --py genepattern --sys-prefix && \
+    jupyter nbextension install --py nbtools --sys-prefix && \
+    jupyter nbextension enable --py nbtools --sys-prefix && \
+    jupyter serverextension enable --py nbtools --sys-prefix && \
     npm cache clean && \
     rm -rf /home/$NB_USER/.cache/yarn && \
     rm -rf /home/$NB_USER/.node-gyp && \
@@ -74,19 +80,19 @@ RUN mkdir /home/$NB_USER/bin && \
     cd /tmp && \
     rm -rf Multicore-TSNE && \
     git clone https://github.com/JCVenterInstitute/DAFi-gating.git && \
-    cd DAFi-gating/C
-    gcc -o -o dafi_gating DAFi-gating_omp.c -lm && \
+    cd DAFi-gating/C && \
+    gcc -o dafi_gating DAFi-gating_omp.c -lm && \
     mv dafi_gating /home/$NB_USER/bin && \
     cd .. && \
     cp FCSTrans/* /home/$NB_USER/bin && \
     cp Notebooks/* /home/$NB_USER/Notebooks && \
-    cp inst/bin/* /hoome/$NB_USER/bin && \
+    cp inst/bin/* /home/$NB_USER/bin && \
+    cp Python/* /home/$NB_USER/bin && \
     cd .. && \
     rm -rf DAFi-gating && \
     fix-permissions /home/$NB_USER/bin && \
     fix-permissions /home/$NB_USER/Notebooks && \
     fix-permissions /home/$NB_USER
-    
 
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME /home/$NB_USER/.cache/
@@ -95,3 +101,4 @@ RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
 
 USER $NB_UID
 
+ENV PATH="/home/"$NB_USER"/bin:${PATH}"
