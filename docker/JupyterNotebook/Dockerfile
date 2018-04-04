@@ -99,6 +99,8 @@ ENV XDG_CACHE_HOME /home/$NB_USER/.cache/
 RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
     fix-permissions /home/$NB_USER
 
+RUN Rscript -e "source('https://bioconductor.org/biocLite.R'); biocLite('flowCore')"
+
 USER $NB_UID
 
 ENV PATH="/home/"$NB_USER"/bin:${PATH}"
