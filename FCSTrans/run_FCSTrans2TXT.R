@@ -5,5 +5,7 @@
 #####################################################################################################
 args=commandArgs(TRUE)
 print(args[1])
-source("./FCSTransTXT.R")
+library(methods)
+library(utils)
+source("~/bin/FCSTrans2TXT.R")
 ipconvert(args[1], verbose=T)
