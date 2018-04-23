@@ -33,6 +33,7 @@ cd ~/work
 cwd=$(pwd)
 Label=${PWD##*/}
 preconfig="/var/DAFi-gating/inst/extdata/preconfig"
+cp /var/DAFi-gating/Notebooks/*.ipynb .
 
 #Transformation and compensation using FCSTrans
 #Convert FCS binary to txt format 

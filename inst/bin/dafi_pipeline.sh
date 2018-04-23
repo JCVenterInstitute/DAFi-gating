@@ -31,6 +31,7 @@ done
 cd ~/work
 cwd=$(pwd)
 Label=${PWD##*/}
+cp /var/DAFi-gating/Notebooks/*.ipynb .
 
 #Transformation and compensation using FCSTrans
 #Convert FCS binary to txt format 
