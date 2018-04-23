@@ -51,12 +51,12 @@ for f in ../TXT/*.txt
 do
 filename=$(basename "$f");
 (ArrangeHeader.awk $preconfig/LJI_TB.header.lst $preconfig/header.txt $f > $filename)&
-if [ $(($count % $OMP_NUM_THREADS)) -eq 0 ]; then wait; fi
+if [ $(($count % $ncores)) -eq 0 ]; then wait; fi
 count=$((count+1));
 done
 wait
 cd ..
-cp $cwd/config/inclusion.config pipeline.config
+cp $preconfig/LJI_TB.config pipeline.config
 
 #Gating and filtering via DAFi framework
 mkdir Gated
