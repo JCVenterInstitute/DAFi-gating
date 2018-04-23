@@ -77,20 +77,21 @@ RUN cd /tmp && \
     yes | pip install . && \
     cd /tmp && \
     rm -rf Multicore-TSNE && \
+    Rscript -e "source('https://bioconductor.org/biocLite.R'); biocLite('flowCore')" && \
+    conda install --quiet --yes -c anaconda intel-openmp && \
+    conda install --quiet --yes natsort && \
+    conda install --quiet --yes --force numpy=1.13.3 && \
+    conda install --quiet --yes --force pandas=0.20.3 && \
+    conda clean -tipsy && \
     git clone https://github.com/JCVenterInstitute/DAFi-gating.git && \
     cd DAFi-gating/C && \
     gcc -o dafi_gating DAFi-gating_omp.c -lm && \
     mv dafi_gating /usr/local/bin && \
     cd .. && \
     cp FCSTrans/* /usr/local/bin && \
-    cp Notebooks/* /home/$NB_USER/Notebooks && \
     cp inst/bin/* /usr/local/bin && \
     cp Python/* /usr/local/bin && \
     cd .. && \
-    rm -rf DAFi-gating && \
-    Rscript -e "source('https://bioconductor.org/biocLite.R'); biocLite('flowCore')" && \
-    conda install --quiet --yes -c anaconda intel-openmp && \
-    conda install --quiet --yes natsort && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /tmp && \
     fix-permissions /home/$NB_USER
