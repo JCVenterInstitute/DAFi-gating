@@ -6,8 +6,8 @@ set -e
 
 cd /var/DAFi-gating
 git pull
-mkdir ~/Notebooks
-cp Notebooks/*.ipynb ~/Notebooks
+cp Notebooks/*.ipynb ~/work
+cd $HOME
 
 if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
   # launched by JupyterHub, use single-user entrypoint
@@ -20,3 +20,4 @@ else
   fi
 fi
 
+cd $HOME
