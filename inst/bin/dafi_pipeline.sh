@@ -49,7 +49,7 @@ for f in ../TXT/*.txt
 do
 filename=$(basename "$f");
 (ArrangeHeader.awk $cwd/config/header.lst $cwd/config/header.txt $f > $filename)&
-if [ $(($count % $ncores)) -eq 0 ]; then wait; fi
+if [ $(($count % $numOfCores)) -eq 0 ]; then wait; fi
 count=$((count+1));
 done
 wait

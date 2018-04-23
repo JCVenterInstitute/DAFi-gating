@@ -51,7 +51,7 @@ for f in ../TXT/*.txt
 do
 filename=$(basename "$f");
 (ArrangeHeader.awk $preconfig/LJI_TB.header.lst $preconfig/header.txt $f > $filename)&
-if [ $(($count % $ncores)) -eq 0 ]; then wait; fi
+if [ $(($count % $numOfCores)) -eq 0 ]; then wait; fi
 count=$((count+1));
 done
 wait
