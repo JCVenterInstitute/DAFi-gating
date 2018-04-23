@@ -4,7 +4,7 @@
 
 set -e
 
-cd /tmp/DAFi-gating
+cd /var/DAFi-gating
 git pull
 mkdir ~/Notebooks
 cp Notebooks/*.ipynb ~/Notebooks
