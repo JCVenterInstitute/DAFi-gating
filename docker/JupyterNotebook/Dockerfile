@@ -14,7 +14,7 @@ RUN apt-get update && \
     gcc &&  apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN conda install --quiet --yes \
+RUN conda install --yes \
     'nomkl' \
     'cmake' \
     'ipywidgets=7.1*' \
@@ -71,9 +71,7 @@ RUN conda install --quiet --yes \
     fix-permissions /home/$NB_USER
 
 # Install Multicore-TSNE (no conda/pip yet), compile a general non-optimized version of C dafi, and copy binary files
-RUN mkdir /home/$NB_USER/bin && \
-    mkdir /home/$NB_USER/Notebooks && \
-    cd /tmp && \
+RUN cd /tmp && \
     git clone https://github.com/DmitryUlyanov/Multicore-TSNE.git && \
     cd Multicore-TSNE/ && \
     yes | pip install . && \
@@ -82,25 +80,28 @@ RUN mkdir /home/$NB_USER/bin && \
     git clone https://github.com/JCVenterInstitute/DAFi-gating.git && \
     cd DAFi-gating/C && \
     gcc -o dafi_gating DAFi-gating_omp.c -lm && \
-    mv dafi_gating /home/$NB_USER/bin && \
+    mv dafi_gating /usr/local/bin && \
     cd .. && \
-    cp FCSTrans/* /home/$NB_USER/bin && \
+    cp FCSTrans/* /usr/local/bin && \
     cp Notebooks/* /home/$NB_USER/Notebooks && \
-    cp inst/bin/* /home/$NB_USER/bin && \
-    cp Python/* /home/$NB_USER/bin && \
+    cp inst/bin/* /usr/local/bin && \
+    cp Python/* /usr/local/bin && \
     cd .. && \
     rm -rf DAFi-gating && \
-    fix-permissions /home/$NB_USER/bin && \
-    fix-permissions /home/$NB_USER/Notebooks && \
+    Rscript -e "source('https://bioconductor.org/biocLite.R'); biocLite('flowCore')" && \
+    conda install --quiet --yes -c anaconda intel-openmp && \
+    conda install --quiet --yes natsort && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /tmp && \
     fix-permissions /home/$NB_USER
 
 # Import matplotlib the first time to build the font cache.
-ENV XDG_CACHE_HOME /home/$NB_USER/.cache/
+ENV XDG_CACHE_HOME /tmp/.cache/
 RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
-    fix-permissions /home/$NB_USER
-
-RUN Rscript -e "source('https://bioconductor.org/biocLite.R'); biocLite('flowCore')"
+    fix-permissions /tmp/.cache
 
 USER $NB_UID
 
-ENV PATH="/home/"$NB_USER"/bin:${PATH}"
+#ENV PATH="/home/"$NB_USER"/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/opt/conda/lib"
+
