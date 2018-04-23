@@ -83,6 +83,13 @@ RUN cd /tmp && \
     conda install --quiet --yes --force numpy=1.13.3 && \
     conda install --quiet --yes --force pandas=0.20.3 && \
     conda clean -tipsy && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+
+RUN conda install --quiet --yes plotly && \
+    conda clean -tipsy
+
+RUN cd /var && \
     git clone https://github.com/JCVenterInstitute/DAFi-gating.git && \
     cd DAFi-gating/C && \
     gcc -o dafi_gating DAFi-gating_omp.c -lm && \
@@ -92,9 +99,8 @@ RUN cd /tmp && \
     cp inst/bin/* /usr/local/bin && \
     cp Python/* /usr/local/bin && \
     cd .. && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /tmp && \
-    fix-permissions /home/$NB_USER
+    echo " test 4" && \
+    fix-permissions /var/DAFi-gating
 
 # Import matplotlib the first time to build the font cache.
 ENV XDG_CACHE_HOME /tmp/.cache/
