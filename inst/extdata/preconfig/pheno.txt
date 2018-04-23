@@ -1,0 +1,22 @@
+Lymphocytes
+Singlet
+Singlet
+LiveDead
+Monocytes
+
+Bcell
+NK
+CD3+ NKT cell
+CD3hi NKT cell
+Tcell
+CD4 Tcell
+CD8 Tcell
+Treg
+Naive CD4 Tcell
+Tcm CD4 Tcell
+Tem CD4 Tcell
+Temra CD4 Tcell
+Naive CD8 Tcell
+Tcm CD8 Tcell
+Tem CD8 Tcell
+Temra CD8 Tcell

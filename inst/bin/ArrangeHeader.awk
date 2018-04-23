@@ -14,7 +14,7 @@ fIndex == 2{Swap[$1]=$2;next}
 	} 
 (fIndex > 2){
 	printf "%s", $(loc[header[1]]);
-	for (i=2;i<=length(header);i++){
+	for (i=2;i in header;i++){
 		if(header[i] in loc){
 			printf "\t%s", $(loc[header[i]])
 		}

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-usage="$(basename "$0") [--help] [-s n] -- DAFi pipeline script to transform, gate, and generate reports on the flowcytometry FCS files
+usage="$(basename "$0") [--help] [-s n] -- LJI132 DAFi pipeline script to transform, gate, and generate reports on the flowcytometry FCS 
+files based on LJI Panel
 
 where:
     --help  show this help text
@@ -31,6 +32,7 @@ done
 cd ~/work
 cwd=$(pwd)
 Label=${PWD##*/}
+preconfig="/var/DAFi-gating/inst/extdata/preconfig"
 
 #Transformation and compensation using FCSTrans
 #Convert FCS binary to txt format 
@@ -47,7 +49,7 @@ count=1
 for f in ../TXT/*.txt
 do
 filename=$(basename "$f");
-(ArrangeHeader.awk $cwd/config/header.lst $cwd/config/header.txt $f > $filename)&
+(ArrangeHeader.awk $preconfig/LJI_TB.header.lst $preconfig/header.txt $f > $filename)&
 if [ $(($count % $OMP_NUM_THREADS)) -eq 0 ]; then wait; fi
 count=$((count+1));
 done
@@ -67,9 +69,11 @@ for file in $cwd/Preprocessed/*
 	mkdir $filename
 	cd $filename
 	if [ "$optimize" = true ] ; then
-		dafi_intel $file $cwd/config/inclusion.config $cwd/config/exclusion.config $numOfClusters $numOfReClusters $numOfCores $seed
+		dafi_intel $file $preconfig/LJI_TB.config $preconfig/Empty.config $numOfClusters $numOfReClusters $numOfCores 
+$seed
 	else
-		dafi_gating $file $cwd/config/inclusion.config $cwd/config/exclusion.config $numOfClusters $numOfReClusters $numOfCores $seed
+		dafi_gating $file $preconfig/LJI_TB.config $preconfig/Empty.config $numOfClusters $numOfReClusters $numOfCores 
+$seed
 	fi
 	cd ..
 done
