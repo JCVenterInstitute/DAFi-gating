@@ -31,19 +31,21 @@ while [[ "$#" > 1 ]]; do case $1 in
   esac; shift; shift
 done
 
-cd ~/work
-cwd=$(pwd)
+if [ -d "work" ]; then
+	cd ~/work
+	cwd=$(pwd)
+else
+	cwd=$(pwd)
+fi
 Label=${PWD##*/}
 preconfig="/var/DAFi-gating/inst/extdata/preconfig"
-cp /var/DAFi-gating/Notebooks/*.ipynb .
 
 #Transformation and compensation using FCSTrans
 #Convert FCS binary to txt format 
-run_FCSTrans2TXT.R FCS
 mkdir TXT
-mv *.txt TXT
-mv *.lst TXT
-mv *.out TXT
+cd TXT
+run_FCSTrans2TXT.R $cwd/FCS
+cd ..
 
 #Arrange columns and replace labels
 mkdir Preprocessed
