@@ -4,10 +4,15 @@
 
 set -e
 
+# Syncing DAFi scripts and notebooks from Github repo
 cd /var/DAFi-gating
 git pull
-cp Notebooks/*.ipynb ~/work
 cd $HOME
+if [ -d "work" ]; then
+        cp /var/DAFi-gating/Notebooks/*.ipynb ~/work
+else
+        cp /var/DAFi-gating/Notebooks/*.ipynb $HOME
+fi
 
 if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
   # launched by JupyterHub, use single-user entrypoint
