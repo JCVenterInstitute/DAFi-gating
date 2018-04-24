@@ -42,13 +42,23 @@ preconfig="/var/DAFi-gating/inst/extdata/preconfig"
 
 #Transformation and compensation using FCSTrans
 #Convert FCS binary to txt format 
-mkdir TXT
+if [ -d "TXT" ]; then
+	rm -Rf TXT
+	mkdir TXT
+else
+	mkdir TXT
+fi
 cd TXT
 run_FCSTrans2TXT.R $cwd/FCS
 cd ..
 
 #Arrange columns and replace labels
-mkdir Preprocessed
+if [ -d "Preprocessed" ]; then
+	rm -Rf Preprocessed
+	mkdir Preprocessed
+else
+	mkdir Preprocssed
+fi
 cd Preprocessed
 count=1
 for f in ../TXT/*.txt
@@ -63,20 +73,25 @@ cd ..
 cp $preconfig"/LJI132_"$panel".config" pipeline.config
 
 #Gating and filtering via DAFi framework
-mkdir Gated
+if [ -d "Gated" ]; then
+	rm -Rf Gated
+	mkdir Gated
+else
+	mkdir Gated
+fi
 cd Gated
 for file in $cwd/Preprocessed/*
 	do
 	filepath=$(basename $file )
 	extension="${filepath##*.}"
 	filename="${filepath%.*}"
-	echo Processing File:  $filename
+	echo Processing File for Gating:  $filename
 	mkdir $filename
 	cd $filename
 	if [ "$optimize" = true ] ; then
-		dafi_intel $file $preconfig"/LJI132_"$panel".config" $preconfig/Empty.config $numOfClusters $numOfReClusters $numOfCores $seed
+		dafi_intel $file $preconfig"/LJI132_"$panel".config" $preconfig/Empty.config $numOfClusters $numOfReClusters $numOfCores $seed >$filename.log 2>$filename.err
 	else
-		dafi_gating $file $preconfig"/LJI132_"$panel".config" $preconfig/Empty.config $numOfClusters $numOfReClusters $numOfCores $seed
+		dafi_gating $file $preconfig"/LJI132_"$panel".config" $preconfig/Empty.config $numOfClusters $numOfReClusters $numOfCores $seed >$filename.log 2>$filename.err
 	fi
 	cd ..
 done
