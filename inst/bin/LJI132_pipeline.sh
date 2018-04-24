@@ -72,11 +72,9 @@ for file in $cwd/Preprocessed/*
 	mkdir $filename
 	cd $filename
 	if [ "$optimize" = true ] ; then
-		dafi_intel $file $preconfig"/LJI132_"$panel".config" $preconfig/Empty.config $numOfClusters $numOfReClusters 
-$numOfCores $seed
+		dafi_intel $file $preconfig"/LJI132_"$panel".config" $preconfig/Empty.config $numOfClusters $numOfReClusters $numOfCores $seed
 	else
-		dafi_gating $file $preconfig"/LJI132_"$panel".config" $preconfig/Empty.config $numOfClusters $numOfReClusters $numOfCores 
-$seed
+		dafi_gating $file $preconfig"/LJI132_"$panel".config" $preconfig/Empty.config $numOfClusters $numOfReClusters $numOfCores $seed
 	fi
 	cd ..
 done
