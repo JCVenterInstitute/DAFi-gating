@@ -57,7 +57,7 @@ if [ -d "Preprocessed" ]; then
 	rm -Rf Preprocessed
 	mkdir Preprocessed
 else
-	mkdir Preprocssed
+	mkdir Preprocessed
 fi
 cd Preprocessed
 count=1
