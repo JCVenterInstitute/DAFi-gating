@@ -28,21 +28,34 @@ while [[ "$#" > 1 ]]; do case $1 in
   esac; shift; shift
 done
 
-cd ~/work
+if [ -d "work" ]; then
+        cd ~/work
+        cwd=$(pwd)
+else
+        cwd=$(pwd)
+fi
 cwd=$(pwd)
 Label=${PWD##*/}
-cp /var/DAFi-gating/Notebooks/*.ipynb .
 
 #Transformation and compensation using FCSTrans
 #Convert FCS binary to txt format 
-run_FCSTrans2TXT.R FCS
-mkdir TXT
-mv *.txt TXT
-mv *.lst TXT
-mv *.out TXT
+if [ -d "TXT" ]; then
+        rm -Rf TXT
+        mkdir TXT
+else
+        mkdir TXT
+fi
+cd TXT
+run_FCSTrans2TXT.R $cwd/FCS
+cd ..
 
 #Arrange columns and replace labels
-mkdir Preprocessed
+if [ -d "Preprocessed" ]; then
+        rm -Rf Preprocessed
+        mkdir Preprocessed
+else
+        mkdir Preprocessed
+fi
 cd Preprocessed
 count=1
 for f in ../TXT/*.txt
@@ -57,7 +70,12 @@ cd ..
 cp $cwd/config/inclusion.config pipeline.config
 
 #Gating and filtering via DAFi framework
-mkdir Gated
+if [ -d "Gated" ]; then
+        rm -Rf Gated
+        mkdir Gated
+else
+        mkdir Gated
+fi
 cd Gated
 for file in $cwd/Preprocessed/*
 	do

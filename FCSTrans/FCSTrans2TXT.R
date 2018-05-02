@@ -2,8 +2,8 @@
 # FCS conversion program
 # 
 #
-library(flowCore)
-library(parallel)
+suppressMessages(library(parallel))
+suppressMessages(library(flowCore))
 
 anonymous <- function(name){
   if(is.null(nametable[[name]])){
@@ -137,7 +137,7 @@ convertfcs <- function(fcs_raw) {
   keywords = keyword(fcs_raw)
   if (debug) print(paste("FCS version:", keywords$FCSversion))
   if (debug) print(paste("File data type:", keywords['$DATATYPE']))
-  if (keywords$FCSversion == "2" || keywords$FCSversion == "3" ) {
+  if (keywords$FCSversion == "2" || keywords$FCSversion == "3" || keywords$FCSversion == "3.1") {
     datatype = unlist(keywords['$DATATYPE']) #check data type
     if (datatype == 'F') {
       #apply compensation if available
@@ -228,7 +228,7 @@ processfcsfile <- function(fcsfile, verbose=F, overwrite=F,
     filename = pieces[length(pieces)]
     
     tryCatch({
-      fcs_raw <- read.FCS(fcsfile, transformation=F)
+      fcs_raw <- read.FCS(fcsfile, transformation=F, emptyValue=FALSE)
       
       
       tempFIL <- fcs_raw@description$`$FIL`
@@ -365,8 +365,8 @@ ipconvert <- function(entry, verbose=F, overwrite=F, renameSource=F, removeName=
     clusterExport(cl, ls(.GlobalEnv), envir=.GlobalEnv)
     clusterEvalQ(cl, library(flowCore))
     
-    write(paste("Original","New", sep = "\t"), file="filetable.out",append=TRUE)
-    write(paste("Original","New", sep = "\t"), file="nametable.out",append=TRUE)
+    #write(paste("Original","New", sep = "\t"), file="filetable.out",append=TRUE)
+    #write(paste("Original","New", sep = "\t"), file="nametable.out",append=TRUE)
     clusterExport(cl, ls(environment()), envir=environment())
     
   }
