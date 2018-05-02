@@ -54,7 +54,7 @@ def plotfig(fname, xdata, ydata, cdata, xlabel, ylabel, pops, lines, args):
         if args.titleshow is True:
                         ax.set_title(sample_name, fontsize=args.sizeoftitle, color='red')
                         
-        print "plotting figure..."
+        print("plotting figure...")
         plt.scatter(xdata,ydata,s=args.sizeofdot,alpha=args.alpha,c=cdata,edgecolors='none')
         
         if args.hidegatelines is False:
@@ -101,7 +101,7 @@ def plotfig(fname, xdata, ydata, cdata, xlabel, ylabel, pops, lines, args):
 def loadNp(openfile, nheaders, nlength):
     data = np.fromfile(openfile, sep=" ", dtype=int)
     #print data[0:nheaders]
-    print np.prod(data.shape)
+    print(np.prod(data.shape))
     data.shape = (nlength, nheaders)
     #print data[0,:]
     return data
@@ -128,7 +128,7 @@ def autoconfig_processfile(name, pool_used, f_index, args):
                     originalName = args.name+str(f_index)
                 else:
                     originalName = "NoNameSample"+str(f_index)
-            print "Processing ", (originalName)
+            print("Processing ", (originalName))
             
             colorlist = args.colorlist
             
@@ -140,7 +140,7 @@ def autoconfig_processfile(name, pool_used, f_index, args):
             num_markers = len(headers) - 2
             
             # create a numpy array for faster data access
-            if args.debug: print "Assigning data to numpy matrix"
+            if args.debug: print("Assigning data to numpy matrix")
             fcm = loadNp(result_file, len(headers), events)
             
             # find the start of pop info on fcs_results_all
@@ -149,13 +149,13 @@ def autoconfig_processfile(name, pool_used, f_index, args):
                 for i,header in enumerate(headers):
                     if header == "pop1":
                         pop_offset=i-1
-                if args.debug: print "Pop offset: ", pop_offset
+                if args.debug: print("Pop offset: ", pop_offset)
             
             # parsing gates from configuration data
-            if args.debug: print "Configuring gates from file"
+            if args.debug: print("Configuring gates from file")
             sub_results = []
             if pool_used == 0: inner_pool = Pool(processes=cores)
-            for gate, config in gates.iteritems():
+            for gate, config in gates.items():
                 xmarker=str(headers[config[1]-1])
                 ymarker=str(headers[config[2]-1])
                 startx=int((float(config[3])/200)*4096)
@@ -167,7 +167,7 @@ def autoconfig_processfile(name, pool_used, f_index, args):
                 lines=[]
                 cluster_type=int(config[8])
                 if cluster_type == 2:
-                    print "slanted"
+                    print("slanted")
                 else:
                     lines.append([(startx, endx), (starty, starty), colorlist[1]])
                     lines.append([(startx, startx), (starty, endy), colorlist[1]])
@@ -178,34 +178,34 @@ def autoconfig_processfile(name, pool_used, f_index, args):
                 
                 dim1 = xmarker
                 dim2 = ymarker
-                print dim1, dim2
+                print(dim1, dim2)
                 dim1_idx = 0
                 dim2_idx = 0
                 
                 for i,marker in enumerate(headers):
                     if marker == dim1:
                         dim1_idx = i
-                        print ("Feature 1: ", marker, i+1)
+                        print(("Feature 1: ", marker, i+1))
                     if marker == dim2:
                         dim2_idx = i
-                        print ("Feature 2: ", marker, i+1)
+                        print(("Feature 2: ", marker, i+1))
                    
                 header_names = key
-                print header_names
+                print(header_names)
                 
                 if args.flocklegacy is False:
                     poploc = int(config[0]) + pop_offset
                     parent_poploc = parent_gate + pop_offset
-                    print "gate location: ", poploc
-                    print "parent gate location: ", parent_poploc
-                    if args.debug: print "iterate through events to find population members"
+                    print("gate location: ", poploc)
+                    print("parent gate location: ", parent_poploc)
+                    if args.debug: print("iterate through events to find population members")
                     fcm[:,-1]=0
                     if args.showparent and (config[0] > 1):
                         fcm[:,-1]=(1-fcm[:,poploc])+(1-fcm[:,parent_poploc])
                     else:
                         fcm[:,-1]=(2-2*fcm[:,poploc])
                     
-                if args.debug: print "sorting numpy array"
+                if args.debug: print("sorting numpy array")
                 if args.sort:
                     sfcm = fcm[np.argsort(fcm[:, -1])] #sort the data set based on population number
                 else:
@@ -215,7 +215,7 @@ def autoconfig_processfile(name, pool_used, f_index, args):
                     sfcm = sfcm[::-1]
                     
                 #print sfcm[0, :]
-                if args.debug: print "creating color array"
+                if args.debug: print("creating color array")
                 cdata = []
                 for a in sfcm[:, -1]:
                     cdata.append(colorlist[a])
@@ -271,7 +271,7 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
                     originalName = args.name+str(f_index)
                 else:
                     originalName = "NoNameSample"+str(f_index)
-            print "Processing ", (originalName)
+            print("Processing ", (originalName))
             
             colorlist = args.colorlist
             
@@ -280,15 +280,16 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
             header = result_file.readline()
             header = header.strip()
             headers = header.split("\t") #parse the headers from the first line of input
-            headers = filter(None, headers)
-	    num_markers = len(headers) - 2
+            headers = [_f for _f in headers if _f]
+
+            num_markers = len(headers) - 2
             
             # create a numpy array for faster data access
             if args.debug: 
-		print "Assigning data to numpy matrix"
-		print "header length: ", len(headers)
-		print headers
-		print "events count: ", events
+                print("Assigning data to numpy matrix")
+                print("header length: ", len(headers))
+                print(headers)
+                print("events count: ", events)
             fcm = loadNp(result_file, len(headers), events)
             
             # find the start of pop info on fcs_results_all
@@ -297,17 +298,17 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
                 for i,header in enumerate(headers):
                     if header == "pop1":
                         pop_offset=i-1
-                if args.debug: print "Pop offset: ", pop_offset
+                if args.debug: print("Pop offset: ", pop_offset)
             
             axis_popIndexDict = defaultdict(list)
             
-            print "Configuring axises from gate configuration file"
+            print("Configuring axises from gate configuration file")
             axises=[]
             composite_axis=0
             last_xmarker=""
             last_ymarker=""
             last_parent=0
-            for pop, config in gates.items():
+            for pop, config in list(gates.items()):
                 #pop="pop"+str(i+1)
                 #config=gates.get(pop)
                 
@@ -335,7 +336,7 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
             cols = int(min(num_axises,4))
             rows = int(max(int(math.ceil(num_axises / float(cols))),1))
             
-            print "Iterating through feature pairs"
+            print("Iterating through feature pairs")
             sub_results = []
             composite_list = []
             if pool_used == 0: inner_pool = Pool(processes=cores)
@@ -349,19 +350,19 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
                 for i,marker in enumerate(headers):
                     if marker == dim1:
                         dim1_idx = i
-                        print ("Feature 1: ", marker, i+1)
+                        print(("Feature 1: ", marker, i+1))
                     if marker == dim2:
                         dim2_idx = i
-                        print ("Feature 2: ", marker, i+1)
+                        print(("Feature 2: ", marker, i+1))
                         
                 header_names = dim1 + "_vs_" + dim2
                 axis_name = mpair[2]
-                print header_names, axis_name
+                print(header_names, axis_name)
                 
                 if args.flocklegacy is False:
                     fcm[:,-1]=0 #reset color mapping in np matrix
                     pops = axis_popIndexDict.get(axis_name)
-                    if args.debug: print "iterate through events to find population members"
+                    if args.debug: print("iterate through events to find population members")
                     poplist_colors = []
                     for i, pop in enumerate(pops):
                         config=gates.get(pop)
@@ -380,7 +381,7 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
                         
                         if (xmarker==dim1) and (ymarker==dim2):
                             if cluster_type == 2:
-                                print "slanted"
+                                print("slanted")
                             else:
                                 lines.append([(startx, endx), (starty, starty), colorlist[i+2]])
                                 lines.append([(startx, startx), (starty, endy), colorlist[i+2]])
@@ -388,7 +389,7 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
                                 lines.append([(endx, endx), (starty, endy), colorlist[i+2]])
                         elif (xmarker==dim2) and (ymarker==dim1):
                             if cluster_type == 2:
-                                print "slanted"
+                                print("slanted")
                             else:
                                 lines.append([(starty, endy), (startx, startx), colorlist[i+2]])
                                 lines.append([(starty, starty), (startx, endx), colorlist[i+2]])
@@ -400,7 +401,7 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
                         else:
                             fcm[:,-1]=np.maximum(fcm[:,-1], (1-fcm[:,pop_loc])*(i+2))
                                 
-                if args.debug: print "sorting numpy array"
+                if args.debug: print("sorting numpy array")
                 if args.sort:
                     sfcm = fcm[np.argsort(fcm[:, -1])] #sort the data set based on population number
                 else:
@@ -409,15 +410,16 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
                 if args.reversesort:
                     sfcm = sfcm[::-1]
                     
-                print "creating color array"
+                print("creating color array")
                 cdata = []
-		for a in sfcm[:, -1]:
-			try:	
-	                	cdata.append(colorlist[a])
-			except Exception, err:
-				print "ERROR in index: ", a
-				sys.stderr.write('Error: %sn' % str(err))
-				return 1   
+                
+                for a in sfcm[:, -1]:
+                    try:
+                        cdata.append(colorlist[a])
+                    except Exception as err:
+                        print("ERROR in index: ", a)
+                        sys.stderr.write('Error: %sn' % str(err))
+                        return 1   
 
                 xdata = sfcm[:,dim1_idx]
                 ydata = sfcm[:,dim2_idx]
@@ -453,15 +455,15 @@ def autoconfig_processfile2(name, pool_used, f_index, args):
                 inner_pool.close()
                 inner_pool.join()
             if args.gatescomposite:
-                print "Number of rows and columns for the composite plots (gates): ", rows, cols    
+                print("Number of rows and columns for the composite plots (gates): ", rows, cols)    
                 compose_from_fig(composite_list, rows, cols, num_axises, sample_name, " ", " ", 0, args)
             
             return sub_results
     except IOError as exc:
         if exc.errno != errno.EISDIR: # Do not fail if a directory is found, just ignore it.
             raise # Propagate other kinds of IOError.args
-    except Exception,e:
-        print >> sys.stderr, "Exception: %s" % str(e)
+    except Exception as e:
+        print("Exception: %s" % str(e), file=sys.stderr)
         raise Exception("".join(traceback.format_exception(*sys.exc_info())))
 
 #
@@ -482,7 +484,7 @@ def processfile(name, pool_used, f_index, args):
                     originalName = nameParts[len(nameParts)-2]
                 else:
                     originalName = "NoNameSample"+str(f_index)
-            print "Processing ", (originalName)
+            print("Processing ", (originalName))
             
             # retrieve command line options from args
             colorlist = args.colorlist
@@ -530,14 +532,14 @@ def processfile(name, pool_used, f_index, args):
                 for i,header in enumerate(headers):
                     if header == "pop1":
                         pop_offset=i-1
-                if args.debug: print "Pop offset: ", pop_offset
+                if args.debug: print("Pop offset: ", pop_offset)
                 
-                if args.debug: print ("Events: ",events)
-                if args.debug: print ("Number of Markers: ",num_markers)
+                if args.debug: print(("Events: ",events))
+                if args.debug: print(("Number of Markers: ",num_markers))
                 
                 fcm[:,-1]=0
                 for i, popIndex in enumerate(pop2DIndex):
-                    print i, popIndex
+                    print(i, popIndex)
                     fcm[:,-1] = np.maximum(fcm[:,-1], (1-fcm[:,popIndex])*(popIndex))
             
             # Sort the matrix data based on the population column (last column)
@@ -568,7 +570,7 @@ def processfile(name, pool_used, f_index, args):
                 
                 dim1 = mpair[0]
                 dim2 = mpair[1]
-                if args.debug: print dim1, dim2
+                if args.debug: print(dim1, dim2)
                 dim1_idx = 0
                 dim2_idx = 0
                 
@@ -586,7 +588,7 @@ def processfile(name, pool_used, f_index, args):
                         cluster_type=int(config[8])
                         if (xmarker==dim1) and (ymarker==dim2):
                             if cluster_type == 2:
-                                print "slanted"
+                                print("slanted")
                             else:
                                 lines.append([(startx, endx), (starty, starty), colorlist[pdict[config[0]+pop_offset]]])
                                 lines.append([(startx, startx), (starty, endy), colorlist[pdict[config[0]+pop_offset]]])
@@ -594,7 +596,7 @@ def processfile(name, pool_used, f_index, args):
                                 lines.append([(endx, endx), (starty, endy), colorlist[pdict[config[0]+pop_offset]]])
                         elif (xmarker==dim2) and (ymarker==dim1):
                             if cluster_type == 2:
-                                print "slanted"
+                                print("slanted")
                             else:
                                 lines.append([(starty, endy), (startx, startx), colorlist[pdict[config[0]+pop_offset]]])
                                 lines.append([(starty, starty), (startx, endx), colorlist[pdict[config[0]+pop_offset]]])
@@ -604,10 +606,10 @@ def processfile(name, pool_used, f_index, args):
                 for i,marker in enumerate(markers):
                     if marker == dim1:
                         dim1_idx = i
-                        print ("Feature 1: ", marker, i)
+                        print(("Feature 1: ", marker, i))
                     if marker == dim2:
                         dim2_idx = i
-                        print ("Feature 2: ", marker, i)
+                        print(("Feature 2: ", marker, i))
                         
                 xdata = sfcm[:,dim1_idx]
                 ydata = sfcm[:,dim2_idx]
@@ -625,13 +627,13 @@ def processfile(name, pool_used, f_index, args):
                             pop_name=pop_name+pop
                 
                 png_file = plotfig(sample_name, xdata, ydata, cdata, dim1, dim2, pops, lines, args)
-                print png_file
+                print(png_file)
                 sub_results.append([header_names, [sample_name, png_file]])
                 composite_list.append([header_names, png_file])
             
             if args.pairscomposite:
-                print "Number of rows and columns for the composite plots (markers): ", rows, cols
-                print composite_list
+                print("Number of rows and columns for the composite plots (markers): ", rows, cols)
+                print(composite_list)
                 compose_from_fig(composite_list, rows, cols, num_pairs, sample_name, " ", " ", 0, args)
             return sub_results
     except IOError as exc:
@@ -671,7 +673,7 @@ def compose_from_fig(data, rows, cols, num_images, title, xlabel, ylabel, spacei
         pageCount = 0
         startOffset = 0
         
-        print "Number of images to compose: "+str(num_images)+", number of rows: "+str(rows)
+        print("Number of images to compose: "+str(num_images)+", number of rows: "+str(rows))
         while (currentRows > 0):
             
             if currentRows>4:
@@ -679,7 +681,7 @@ def compose_from_fig(data, rows, cols, num_images, title, xlabel, ylabel, spacei
             else:
                 processingRows=currentRows
             
-            if args.debug: print "currentRows: "+str(currentRows)+", processedRows: "+str(processedRows)+", processing "+str(processingRows)+" of rows, on page "+str(pageCount)
+            if args.debug: print("currentRows: "+str(currentRows)+", processedRows: "+str(processedRows)+", processing "+str(processingRows)+" of rows, on page "+str(pageCount))
                 
             f, axarr = plt.subplots(processingRows, cols)
             f.set_size_inches(8, 2+(2*processingRows))
@@ -695,7 +697,7 @@ def compose_from_fig(data, rows, cols, num_images, title, xlabel, ylabel, spacei
                 rowIndex = i/cols
                 colIndex = i%cols
                 imageIndex=(i+startOffset)
-                if args.debug: print "Processing image: ", rowIndex, colIndex, imageIndex
+                if args.debug: print("Processing image: ", rowIndex, colIndex, imageIndex)
                 ax.set_axis_off()
                 
                 if imageIndex < num_images:
@@ -733,10 +735,10 @@ def compose_from_fig(data, rows, cols, num_images, title, xlabel, ylabel, spacei
             startOffset = processedRows*cols
             pageCount=pageCount+1
             plt.close()
-    except Exception, e:
-        print >> sys.stderr, "Exception: %s" % str(e)
-        print "Problem file: "+title
-        print "Length of data package: ", len(data)
+    except Exception as e:
+        print("Exception: %s" % str(e), file=sys.stderr)
+        print("Problem file: "+title)
+        print("Length of data package: ", len(data))
         raise Exception("".join(traceback.format_exception(*sys.exc_info())))
 
 #
@@ -748,7 +750,7 @@ def sample_composite(convResults, num_sources, p_args):
     for i in range(len(convResults)):
         for j in range(len(convResults[i])):
             data_name = convResults[i][j][0]
-            if p_args.debug: print "Processing data pack ", data_name
+            if p_args.debug: print("Processing data pack ", data_name)
             dataDict[data_name].append(convResults[i][j][1])
             #templist = dataDict.get(data_name)
             # for k,data_test in enumerate(templist):
@@ -764,7 +766,7 @@ def sample_composite(convResults, num_sources, p_args):
                 num_samples = len(samplelist)
                 cols = int(min(num_samples,4))
                 rows = int(max(int(math.ceil(num_samples / float(cols))),1))
-                print "Number of rows and columns for the composite plots (samples): ", rows, cols
+                print("Number of rows and columns for the composite plots (samples): ", rows, cols)
     
                 dim1=""
                 dim2=""
@@ -773,7 +775,7 @@ def sample_composite(convResults, num_sources, p_args):
                     dim1 = str(headerstr[0])
                     dim2 = str(headerstr[1])
                 
-                print "Processing composite for "+currentPair
+                print("Processing composite for "+currentPair)
                 scomp_pool.apply_async(compose_from_fig, args=[sorted_results, rows, cols, num_samples, currentPair, dim1, dim2, 0, p_args])
             scomp_pool.close()
             scomp_pool.join()
@@ -781,9 +783,9 @@ def sample_composite(convResults, num_sources, p_args):
             #procedure for composing all populations of a single sample
             composite_list = []
             sample_name = ""
-            dictKeys = dataDict.keys()
+            dictKeys = list(dataDict.keys())
             dictKeys.sort(key=natural_sort_key)
-            print "sorted keys: ", dictKeys
+            print("sorted keys: ", dictKeys)
             for w,key in enumerate(dictKeys):
                 samplelist = dataDict.get(key)
                 if w==0: sample_name=samplelist[0][0]
@@ -793,17 +795,17 @@ def sample_composite(convResults, num_sources, p_args):
             num_figs = len(composite_list)
             cols = int(min(num_figs,4))
             rows = int(max(int(math.ceil(num_figs / float(cols))),1))
-            print "Number of rows and columns for the composite plots (samples): ", rows, cols
+            print("Number of rows and columns for the composite plots (samples): ", rows, cols)
             compose_from_fig(composite_list, rows, cols, num_figs, sample_name, "", "", 0, p_args)
         plt.close("all")
     except KeyboardInterrupt:
         scomp_pool.terminate()
         scomp_pool.join()
         sys.exit(1)
-    except Exception, e:
+    except Exception as e:
         scomp_pool.terminate()
         scomp_pool.join()
-        print >> sys.stderr, "Exception: %s" % str(e)
+        print("Exception: %s" % str(e), file=sys.stderr)
         raise Exception("".join(traceback.format_exception(*sys.exc_info())))
     
 #
@@ -811,7 +813,7 @@ def sample_composite(convResults, num_sources, p_args):
 #
 def marker_pair(s):
     try:
-        xmarker, ymarker = map(str, s.split(','))
+        xmarker, ymarker = list(map(str, s.split(',')))
         return [xmarker, ymarker]
     except:
         raise argparse.ArgumentTypeError("marker pair must be xmarker,ymarker")
@@ -873,11 +875,11 @@ if __name__ == '__main__':
     # check if either configuration file or manual configuration is specified
     if (p_args.flocklegacy is False):
         if (((p_args.config is None) and (p_args.markers is None)) or ((p_args.config is None) and (p_args.listofpop is None) and (p_args.markers is None))):
-            print >> sys.stderr, "Must specify either the configuration file or manual list of populations and marker pairs (see help)"
+            print("Must specify either the configuration file or manual list of populations and marker pairs (see help)", file=sys.stderr)
             sys.exit(1)
     else:
         if ((p_args.config is not None) or (p_args.listofpop is not None)):
-            print >> sys.stderr, "Can't specify configuration and/or populations while in legacy FLOCK mode (see help)"
+            print("Can't specify configuration and/or populations while in legacy FLOCK mode (see help)", file=sys.stderr)
             sys.exit(1)
     
     pops = p_args.listofpop
@@ -909,10 +911,10 @@ if __name__ == '__main__':
             file_pool.terminate()
             file_pool.join()
             sys.exit(1)
-        except Exception, e:
+        except Exception as e:
             file_pool.terminate()
             file_pool.join()
-            print >> sys.stderr, "Exception: %s" % str(e)
+            print("Exception: %s" % str(e), file=sys.stderr)
             raise Exception("".join(traceback.format_exception(*sys.exc_info())))
             
         plt.close("all")
@@ -923,14 +925,14 @@ if __name__ == '__main__':
             convResults = []
             for result in results:
                 tempResult = result.get()
-                if p_args.debug: print tempResult[0][0]
+                if p_args.debug: print(tempResult[0][0])
                 convResults.append(tempResult)
             
             sample_composite(convResults, num_files, p_args)
-	sys.exit(0)
+        sys.exit(0)
     else:
         try:
-            print "Processing only 1 file........................."
+            print("Processing only 1 file.........................")
             if (((p_args.listofpop is None) and (p_args.flocklegacy is False)) or ((p_args.markers is None) and (p_args.flocklegacy is False))):
                 if p_args.showmultigates:
                     convResults = [autoconfig_processfile2(files[0], 0, 0, p_args)]
@@ -944,8 +946,8 @@ if __name__ == '__main__':
             sys.exit(0)    
         except KeyboardInterrupt:
             sys.exit(1)
-        except Exception, e:
-            print >> sys.stderr, "Exception: %s" % str(e)
+        except Exception as e:
+            print("Exception: %s" % str(e), file=sys.stderr)
             raise Exception("".join(traceback.format_exception(*sys.exc_info())))
-	sys.exit(0)
+        sys.exit(0)
 sys.exit(0)
