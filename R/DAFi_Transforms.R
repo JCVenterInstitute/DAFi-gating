@@ -170,3 +170,47 @@ FCSTransInput <- function(rawfcs_path, debugmode=FALSE) {
   
   output
 }
+
+#' Read in Preprocessed FCS file in tab delimited TXT format
+#'
+#' 
+#' 
+#' @param rawfcs_path     path to the raw fcs file
+#' @export
+TXTInput <- function(txt_path, debugmode=FALSE) {
+  
+  
+  #Construct output list
+  output <- list(
+    rawflowFrame = NULL,
+    processedFlowFrame = NULL,
+    colsToUse = NULL
+  )
+  
+  if(isTRUE(debugmode)){print("Reading TXT file")}
+  #Read in input raw fcs file
+  
+  tryCatch({
+    fcs_txt <-
+      suppressWarnings(read.table(txt_path, header=TRUE))
+  }, error = function(ex) {
+    print (paste("    ! Error in reading TXT file !", ex))
+  })
+  
+  if(isTRUE(debugmode)){print("Locating columns used for clustering...")}
+  
+  mm<-as.matrix(seq.int(nrow(fcs_txt)))
+  colnames(mm)<-c("Event")
+  P_1 <- cbind2(fcs_txt,mm)
+  P_1 <- data.matrix(P_1,rownames.force = TRUE)
+  fcs <- as_flowFrame(P_1,source.frame = NULL)
+  fcs@description$FILENAME <- basename(txt_path)
+  #Locate columns (marker channels) used for clustering
+  colsToUse <- 1:(ncol(P_1)-1)
+  
+  output$rawflowFrame <- fcs_txt
+  output$colsToUse <- colsToUse
+  output$processedFlowFrame <- fcs
+  
+  output
+}

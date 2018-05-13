@@ -30,10 +30,12 @@
 #'
 #' @import methods
 #' @import utils
+#' @import tools
 #' @import flowCore
 #' @import flowViz
 #' @import FlowSOM
 #' @import ClusterR
+#' @import premessa
 #' @importFrom flowStats curv1Filter
 #'
 #' @export
@@ -54,6 +56,8 @@ DAFi <-
     #Parse dafi config file
     config_table <- read.table(config_path,
                                sep = "\t", header = FALSE)
+    
+    if (ncol(config_table)==12) {
     colnames(config_table) <-
       c(
         "PopIndex",
@@ -69,6 +73,24 @@ DAFi <-
         "Recluster",
         "Phenotype"
       )
+    }else if (ncol(config_table)==13) {
+      colnames(config_table) <-
+        c(
+          "PopIndex",
+          "ChannelX",
+          "ChannelY",
+          "minX",
+          "maxX",
+          "minY",
+          "maxY",
+          "ParentIndex",
+          "FilterType",
+          "CreateSubpop",
+          "Recluster",
+          "SelectDimensions",
+          "Phenotype"
+        )
+    }
     cat("Parsed configuration table\n")
     
     if (!is.null(reverse_path)) {
@@ -87,15 +109,20 @@ DAFi <-
     }
     
     #read in, compensate, transform, and format fcs file
-    fcsTransInput <- FCSTransInput(rawfcs_path, debugmode = debugmode)
-    
+    if (file_ext(rawfcs_path)=="fcs") {
+      fcsTransInput <- FCSTransInput(rawfcs_path, debugmode = debugmode)
+    } else {
+      fcsTransInput <- TXTInput(rawfcs_path, debugmode = debugmode)
+    }
     #fcs_raw = fcsTransInput$rawflowFrame
-    colsToUse = fcsTransInput$colsToUse
+    
+    
     fcs = fcsTransInput$processedFlowFrame
     sampleName = tools::file_path_sans_ext(basename(fcs@description$FILENAME))
     
     #Locate columns (marker channels) used for clustering
     colsToUseList <- list()
+    colsToUse = fcsTransInput$colsToUse
     colsToUseList[[1]] <- colsToUse
     
     #Setup file connections for output
@@ -139,6 +166,24 @@ DAFi <-
       } else {
         phenotype = paste("Gate", i)
       }
+      
+      #Columns to use for clustering
+      if (ncol(config_table)==13){
+        if(config_table$SelectDimensions[i] == '0'){
+          colsToUse <- fcsTransInput$colsToUse
+        } else {
+          #p<-config_table$SelectDimensions[!config_table$SelectDimensions %in% "0"]
+          p<-toString(config_table$SelectDimensions[i])
+          p1<-strsplit(p,",")
+          p2<-lapply(p1, function(x) c(as.numeric(x)))
+          class(p2[[1]])
+          colsToUse <- p2[[1]]
+          print(paste("Columns used: ",toString(colsToUse)))
+        }
+      } else{
+        colsToUse = fcsTransInput$colsToUse
+      }
+      colsToUseList[[i]] <- colsToUse
       
       #resolve label names of current and parent populations
       currentPopID = paste("pop", i, sep = "")
