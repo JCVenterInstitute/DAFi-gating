@@ -1,6 +1,11 @@
 
 # DAFi Automated Jupyter Container (based on Jupyter Notebook Scientific Python Stack)
 
+https://hub.docker.com/r/rarsenal/dafi-jupyter/
+
+docker pull rarsenal/dafi-jupyter
+
+
 ## What it Gives You
 
 * C based DAFi-gating pipeline with automated reports
