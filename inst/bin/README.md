@@ -26,8 +26,8 @@ same as nclusters)
 
 ### Sample docker run command
 
-```
-docker run --rm -p 8888:8888 -v $host_dir:/home/jovyan/work dafi/jpynote dafi_pipeline.sh --nclusters 200
+```bash
+docker run --rm -p 8888:8888 -v $host_dir:/home/jovyan/work dafi/jpynote start.sh dafi_pipeline.sh --nclusters 200
 ```
 
 where dafi/jpynote is the tag to the dafi jpynotebook container in your system and $host_dir is the directory with the dataset to be 
@@ -123,8 +123,8 @@ same as nclusters)
 
 ### Sample docker run command
 
-```
-docker run --rm -p 8888:8888 -v $host_dir:/home/jovyan/work dafi/jpynote LJI132_pipeline.sh --panel 1 --nclusters 200
+```bash
+docker run --rm -p 8888:8888 -v $host_dir:/home/jovyan/work dafi/jpynote start.sh LJI132_pipeline.sh --panel 1 --nclusters 200
 ```
 
 where dafi/jpynote is the tag to the dafi jpynotebook container in your system and $host_dir is the directory with the dataset to be
