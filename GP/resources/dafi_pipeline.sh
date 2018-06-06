@@ -92,5 +92,5 @@ done
 parsePercentage.awk */DU*percentage.txt > Batch_percentages.txt
 parsePercentage.awk */DU*events.txt > Batch_events.txt
 cd ..
-cp ../AutoReport.ipynb .
+cp ../*.ipynb .
 jupyter nbconvert --ExecutePreprocessor.timeout=10000 --to html_embed --execute AutoReport.ipynb > jpy.out 2>jpyerror.txt
