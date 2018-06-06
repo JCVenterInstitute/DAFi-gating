@@ -5,7 +5,7 @@
 ### Author: 
 Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., ichang@jcvi.org, and Bob Sinkovits, Ph.D., sinkovit@sdsc.edu
 	
-### Copyright: Author and J. Craig Venter Institute
+### Copyright: Authors and J. Craig Venter Institute
 	
 Paper link: https://doi.org/10.1002/cyto.a.23371
 
