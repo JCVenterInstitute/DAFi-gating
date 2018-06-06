@@ -1,0 +1,122 @@
+# Tomcat http port number
+GENEPATTERN_PORT=$GENEPATTERN_PORT$
+
+# URL base for GenePattern.  To override dynamically constructed URL if needed
+GenePatternURL=http://127.0.0.1:$GENEPATTERN_PORT$/gp/
+# Flag which redirects all users to the fully qualified host name of your server
+redirect.to.fq.host=false
+# Set the fully qualified host name of your server
+fqHostName=127.0.0.1
+
+# purgeJobsAfter=-1 to disable, 1-n for number of days to retain before purging jobs
+purgeJobsAfter=$purgeJobsAfter$
+# time of day to purge jobs (HH:MM, 24 hour format)
+purgeTime=$purgeTime$
+# email address of person to notify for website error messages (eg. JSP precompile failures)
+webmaster=$webmaster$
+
+# standard Java task execution environment will have up to 512 MB of memory for each module
+#java_flags=-Xmx512M
+visualizer_java_flags=-Xmx512m
+
+job.results.per.page=10
+
+# Switch to enable password logins. See RegistrationBean.
+require.password=$require.password$
+
+# Allow users to input arbitrary network file paths as value to input file input parameters
+allow.input.file.paths=false
+
+#root directory for browsing server if allow.input.file.paths is true. 
+server.browse.file.system.root=/
+
+# Switch to display the terms of service for the hosted service
+show.terms.of.service=false
+
+# Event Logging -- disabled by default.  this should not be enabled if using an HSQL database
+event.logging.enabled=false
+
+# Allow users to create new accounts?
+create.account.allowed=true
+
+# Show the link to the registration page on the login page?
+show.registration.link=true
+
+# session timeout interval for logged in sessions, in seconds (default, 4h=14400s)
+session.maxInactiveInterval=14400
+
+#***********************************************************
+# Database Parameters
+#***********************************************************
+# The database connection is configured in the 'database_default.properties' file
+# Create a 'database_custom.properties' file to customize.
+#
+# the HSQL_port is set here because the InstallAnywhere installer prompts for this value
+HSQL_port=$HSQL_port$
+
+# **********************************************************
+# Custom Authentication
+# **********************************************************
+#the name of the [optional] IAuthenticationPlugin class
+#authentication.class=org.genepattern.server.auth.DefaultGenePatternAuthentication
+#the name of the [optional] IGroupMembershipPlugin class
+#group.membership.class=org.genepattern.server.auth.XmlGroupMembership
+
+# **********************************************************
+# Job configuration / Server properties 
+#
+# additional configuration settings are in the config_default.yaml file
+# treat this as a read-only file, it will get replaced when you update the server.
+#
+# to customize your server make a copy of the config_default.yaml file and name it
+# config_custom.yaml.
+# 
+# **********************************************************
+
+# **********************************************************
+# You probably don't want to edit anything below here!!!
+# **********************************************************
+
+# filename extensions for documentation files
+files.doc=html,htm,xhtml,pdf,rtf,txt,doc,docx
+
+# Broad Institute module repository url
+ModuleRepositoryURL=http://software.broadinstitute.org/webservices/gpModuleRepository
+DefaultModuleRepositoryURL=http://software.broadinstitute.org/webservices/gpModuleRepository
+ModuleRepositoryURLs=http://software.broadinstitute.org/webservices/gpModuleRepository,http://software.broadinstitute.org/webservices/gparcModuleRepository,http://software.broadinstitute.org/webservices/betaModuleRepository
+
+SuiteRepositoryURL=http://software.broadinstitute.org/webservices/gpModuleRepository/suite
+DefaultSuiteRepositoryURL=http://software.broadinstitute.org/webservices/gpModuleRepository/suite
+SuiteRepositoryURLs=http://software.broadinstitute.org/webservices/gpModuleRepository/suite
+
+
+# Entries for LSID management
+lsid.authority=$LSID_AUTHORITY$
+
+num.threads=20
+
+# directories for files, all relative to GenePatternServer/Tomcat directory
+resources=$USER_INSTALL_DIR$/resources
+
+# set this to 'true' if you want the system message to automatically popup an alert window
+# systemMessage.enableJavaScriptAlert=false
+
+# java.io.tmpdir set in StartGenePatternServer.lax and WEB-INF/web.xml
+
+# number of concurrently running pipelines
+pipeline.num.threads=20
+
+gp.allowed.clients=Any
+
+# module chooser options
+module.chooser.show.category.view=true
+module.chooser.show.suite.view=true
+module.chooser.show.all.view=true
+module.chooser.show.search=true
+
+# cache TaskInfo in server memory, rather than querying the DB
+# set to 'false' to disable the cache
+taskInfoCache.enable=true
+
+# GenomeSpace options
+#javax.net.ssl.trustStore=./GenePatternServer/resources/gstruststore.prefilled

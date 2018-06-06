@@ -1,0 +1,285 @@
+#
+# example GenePattern configuration file
+#
+# Note: this is a YAML file, indentation is important, TAB characters are not permitted.
+#     You must use an exact number of spaces to denote each indentation level.
+#     This file uses 4 space characters for each level.
+#
+#     The GP server uses the snakeyaml parser (http://code.google.com/p/snakeyaml/). 
+#     For more details about the YAML format, see: http://www.yaml.org/
+#
+# The GP server accepts a string or an array of strings as a value. 
+# You must wrap some values in double quotes, especially for items in an array. 
+# To be certain, wrap all values in double quotes.
+#
+# Of special note are the following examples:
+# When null is used as a value, without double quotes, it is interpreted as a null value rather than the String "null".
+#     arg.null: null
+#
+# Numbers and booleans must be wrapped in double quotes.
+#     arg.value: "true"
+#     arg.list: [ "4", "3.14", "1.32e6", "true", "false" ] 
+# The following example will cause a parse error:
+#     arg.list.error: [ 4, 3.14, 1.32e6, true, false ] 
+
+# apply these properties to all jobs
+default.properties:
+    #the path to the genepattern.log and webserver.log files
+    #gp.log: log
+    executor: RuntimeExec
+    java_flags: -Xmx512m
+    # the number of milliseconds to wait before canceling a job submission (default to 5 minutes)
+    job.dispatch.timeout: 300000
+    # the number of milliseconds to wait before canceling a job termination request (default to 30 seconds)
+    job.termination.timeout: 30000
+    # policy for flagging a job as an error, by default, a non-empty stderr stream causes a job to be flagged as an error
+    # optionally, a non-zero exitValue of the job can cause a job to be flagged as an error
+    job.error_status.stderr: true
+    job.error_status.exit_value: false
+    # filter job results based on the given comma separated list of glob patterns
+    job.FilenameFilter: [ ".nfs*", ".rte.out", ".lsf*", ".sge.out" ]
+    # when set to true, delete empty stdout files from the job results directory
+    job.deleteEmptyStdout: false
+    job.deleteEmptyStdout.default: true
+    job.deleteEmptyStdout.custom: false
+    # initial status of the internal job queue, if true, it means jobs won't execute until the internal queue is resumed
+    job.queue.suspend_on_start: false
+    # flag to allow users to submit jobs
+    allow.new.job: true
+    
+    # flag for enabling server files
+    # Set this to true to allow users to access data files which are on the server file path
+    allow.input.file.paths: false
+    # when allow.input.file.paths is true, define the paths on the server file system
+    # which can be used as input files
+    # If you don't set this, then all files are allowed
+    #
+    # Can be a single path
+    #server.browse.file.system.root: "/Users/SharedData"
+    # Can be a list of paths
+    #server.browse.file.system.root: [ "/Users/SharedData",  "/Custom/Path" ]
+    
+    #set the disk quota
+    #quota: 20 GB
+    
+    # Set custom location for installed modules and patches.
+    # The default location is $GENEPATTERN_HOME/taskLib
+    # This is a global setting, the taslib must be the same for all users. 
+    tasklib: /Users/GenePattern/taskLib
+    
+    #
+    # Set the fully qualifed directory path (no trailing '/') to the support tools
+    # which are packaged as part of the GenePattern web application (e.g. gp.war).
+    #     ./Tomcat/webapps/gp/WEB-INF/tools
+    # By default you do not need to set this.
+    # If your app server does not unpackage the war file; you can manually 
+    # unpackage into a custom location. 
+    # Set this path so that built in tools, such as ant, can be resolved to the custom
+    # location, e.g.
+    #     ant=<gp.tools.dir>/ant/...
+    #
+    gp.tools.dir: /Users/GenePattern/tools
+
+    # PipelineDependencyCache, hidden features in the 3.6.0 release.
+    # Set this to true to enable.
+    # 1) check for dependent modules and pipelines when deleting a task
+    #    from the manage modules page
+    # 2) check for dependent pipelines after making an edit to a dependent pipeline 
+    #    from the Pipeline Designer page
+    pipelineDependencyCache.enable: false
+    
+    # enable custom categories for pipelines and visualizers
+    # New feature added in GP 3.7.1 
+    org.genepattern.server.webapp.jsf.ModuleHelper.enableCustomCategories: true
+    
+    # to customize the file purger, add the 'purgeJobsAfter' property to
+    # an entry in the 'user.properties' or 'group.propeties' section
+    #purgeTime: "23:00"
+    #purgeJobsAfter: "-1"
+    
+    #
+    # enable setting of job configuration parameters in the job input form
+    # added in GP 3.8.1
+    #
+    enableJobConfigParams: true
+    
+    #
+    # set the ftp downloader by uncommenting one of these lines
+    #ftpDownloader.type: EDT_FTP_J
+    #ftpDownloader.type: JAVA_6
+    #ftpDownloader.type: COMMONS_NET_3_3
+    #ftpDownloader.type: EDT_FTP_J_SIMPLE
+    
+    # the mail server for sending messages from the GenePattern server
+    smtp.server: smtp.broadinstitute.org
+    # the email recipient of help requests sent via the 'contact us' link
+    contact.us.email: "gp-help@broadinstitute.org"
+    # the from email address for messages sent to end users, such as from the 'forgot password' link  
+    smtp.from.email: "no-reply@genepattern.org"
+
+    # Change the skin GenePattern uses
+    display.skin: frozen
+
+    # The following property can be set to override the "Contact Us" links
+    # contact.link: /gp/pages/contactUs.jsf
+
+    # Turn off the auto-creation of accounts with GenomeSpace
+    # genomeSpaceAutoCreate: false
+    
+
+# a list of command executors
+# The executor id, 'org.genepattern.server.executor.PipelineExecutor', is reserved for the default executor which runs all GP pipelines.
+# Don't use this as an executor id in this file.
+# a map of <id>:<obj>, where
+#    obj := <classname> | <map>
+#    classname := fully qualified classname of a class which implements the org.genepattern.server.executor.CommandExecutor interface
+#    map := classname=<classname> [configuration.file: <path_to_config_file> | configuration.properties: <map>] [default.properties: <map>]
+executors:
+    # default executor for all jobs, it is included in GenePattern
+    RuntimeExec: 
+        classname: org.genepattern.server.executor.RuntimeCommandExecutor
+        configuration.properties:
+            # the total number of jobs to run concurrently
+            num.threads: 20
+            # the total number of jobs to keep on the queue, not yet implemented
+            #max.pending.jobs: 20000
+            # flag, if true save the command line into a log file in the working directory for each job
+            rte.save.logfile: false
+            # the name of the command line log file
+            rte.logfile: .rte.out
+
+    # nested declaration with configuration file, <id>: { classname: <classname>, configuration: <config_file> }
+    Test:
+        classname: org.genepattern.server.executor.TestCommandExecutor
+        configuration.file: test_command_executor.yaml
+
+    #
+    # Lsf integration via the JobRunner API
+    #
+    LSF:
+        classname: org.genepattern.server.executor.drm.JobExecutor
+        configuration.properties:
+            jobRunnerClassname: org.genepattern.drm.impl.lsf.core.CmdLineLsfRunner
+            jobRunnerName: CmdLineLsfRunner
+            
+            ## interval for polling for job status (in ms)
+            #minDelay: 100
+            ## when 'useDynamicDelay' is true, use a built-in algorithm to increase the polling interval
+            #useDynamicDelay: true
+            ## the max polling interval, when 'useDynamicDelay' is true
+            #maxDelay: 30000
+            ## the cutoff time to fail a job when getStatus is UNDETERMINED
+            ## this improves handling of intermittent failures communicating with the queuing system
+            #retryCutoff: 1-00:00:00
+            # set to null to disable this feature and revert back to pre-3.9.5 behavior
+            #retryCutoff: !!null
+            
+        default.properties:
+            job.project: genepattern
+            job.logFile: .lsf.out
+            job.queue: genepattern
+
+            #
+            # additional JobRunner properties
+            #
+            ## the requested memory for the job
+            #job.memory: 2 Gb
+            ## the runtime limit for the job in d-hh:mm:ss format 
+            #job.walltime: 7-00:00:00
+            ## the '-n' arg to the bsub command         
+            #job.cpuCount: 1
+            ## extra command line arguments to the 'bsub' command
+            # job.extaArgs: ["arg1", "arg2", "arg3"]
+
+    # Example configuration for Sun Grid Engine (SGE) executor
+    # This example is based on the gp server deployed at the Broad institute
+    # You need to set them based on your own installation
+    # In order to maintain consistency of jobs after a server restart, 
+    #     you need to use the same SGE_CELL and SGE_SESSION_FILE
+    SGE:
+        classname: org.genepattern.server.executor.sge.SgeCommandExecutor
+        configuration.properties:
+            # SGE config variables, see the SGE doc for more explanation
+            SGE_ROOT: /broad/gridengine
+            SGE_CELL: broad
+            # path to the session file, relative to the gp server's working directory
+            SGE_SESSION_FILE: ./sge/sge_contact.txt
+            # internal variable used by the GP SGE plugin. You probably don't need to change this.
+            SGE_BATCH_SYSTEM_NAME: genepattern_server
+        # below is a list of configuration parameters for the sge executor
+        # these can be set globally, by uncommenting this default.properties section
+        # Note: experimental. These settings have not all been tested.
+        #default.properties:
+        #    sge.priority:
+        #    sge.queueName:
+        #    sge.exclusive:
+        #    sge.maxRunningTime:
+        #    sge.memoryReservation:
+        #    sge.maxMemory:
+        #    sge.slotReservation:
+        #    sge.restartable:
+
+# override default.properties and executor->default.properties based on taskname or lsid
+# Note: executor->configuration.properties are intended to be applied at startup and are not overwritten here
+module.properties:
+    CBS:
+        executor: LSF
+        lsf.max.memory: 16
+        java_flags: -Xmx16g
+    CopyNumberDivideByNormals:
+        executor: LSF
+        lsf.max.memory: 16
+    ESPPredictor:
+        executor: LSF
+        lsf.max.memory: 8
+    ExpressionFileCreator: 
+        executor: LSF
+        lsf.max.memory: 8
+    GISTIC: 
+        executor: LSF
+        lsf.max.memory: 12
+    GLAD: 
+        executor: LSF
+        lsf.max.memory: 8
+    HierarchicalClustering: 
+        executor: LSF
+        lsf.max.memory: 4
+    LOHPaired: 
+        executor: LSF
+        lsf.max.memory: 4
+    NMFConsensus: 
+        executor: LSF
+        lsf.max.memory: 8
+    #example usage of anchor '&' and '*' alias to reuse the same set of properties
+    SNPFileCreator: &snp_settings
+        executor: LSF
+        lsf.max.memory: 12
+        java_flags: -Xmx12g
+    SNPFileSorter: *snp_settings
+    SNPMultipleSampleAnalysis: *snp_settings
+    XChromosomeCorrect: 
+        executor: LSF
+        lsf.max.memory: 4
+
+# custom configuration settings
+# by group id
+group.properties:
+    test:
+        # override default properties for all users in group 'test'
+        executor: Test
+        java_flags: -Xmx2g
+        # override module.properties for all users in group 'test'
+        module.properties:
+            ExpressionFileCreator:
+                lsf.max.memory: 2
+        
+# by user id
+user.properties:
+    admin:
+        # override default properties for 'admin' user
+        lsf.output.filename: lsf.out
+        # override module.properties for 'admin' user
+        module.properties:
+            ExpressionFileCreator:
+                lsf.max.memory: 24
+                java_flags: -Xmx24g
