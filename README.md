@@ -2,7 +2,7 @@
 	
 ## DAFi: User-directed unsupervised filtering and identification of cell populations from flow cytometry data
 
-### Author: 
+### Authors: 
 Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., ichang@jcvi.org, and Bob Sinkovits, Ph.D., sinkovit@sdsc.edu
 	
 ### Copyright: Authors and J. Craig Venter Institute
