@@ -1,16 +1,16 @@
 
-# DAFi Automated Jupyter Container (based on Jupyter Notebook Scientific Python Stack)
+# DAFi Automated Jupyter Container (based on Jupyter Notebook Scientific Python Stack and GenePattern Server)
 
-https://hub.docker.com/r/rarsenal/dafi-jupyter/
+https://hub.docker.com/r/rarsenal/dafi-gp_jupyter/
 
-docker pull rarsenal/dafi-jupyter
+docker pull rarsenal/dafi-gp_jupyter
 
 
 ## What it Gives You
 
 * C based DAFi-gating pipeline with automated reports
 * Jupyter Notebook 5.2.x
-* GenePattern Notebook Jupyter Plugin
+* GenePattern Notebook Plugin for Jupyter
 * Conda Python 3.x environment
 * bokeh, datashader, dask, pandas, matplotlib, scipy, seaborn, scikit-learn, scikit-image, sympy, cython, patsy, statsmodel, cloudpickle, dill, numba, bokeh, vincent, beautifulsoup, xlrd pre-installed
 * Unprivileged user `jovyan` (uid=1000, configurable, see options) in group `users` (gid=100) with ownership over `/home/jovyan` and `/opt/conda`
@@ -19,13 +19,14 @@ docker pull rarsenal/dafi-jupyter
 * A [start-singleuser.sh](../base-notebook/start-singleuser.sh) script useful for running a single-user instance of the Notebook server, as required by JupyterHub
 * A [start.sh](../base-notebook/start.sh) script useful for running alternative commands in the container (e.g. `ipython`, `jupyter kernelgateway`, `jupyter lab`)
 * Options for HTTPS, password auth, and passwordless `sudo`
+* GenePattern workflow Engine with DAFi modules
 
 ## Basic Use
 
 The following command starts a container with the Notebook server listening for HTTP connections on port 8888 with a randomly generated authentication token configured.
 
 ```
-docker run -it --rm -p 8888:8888 rarsenal/dafi-jupyter
+docker run -it --rm -p 8888:8888 -p 8883:8080 rarsenal/dafi-gp_jupyter
 ```
 
 Take note of the authentication token included in the notebook startup log messages. Include it in the URL you visit to access the Notebook server or enter it in the Notebook login form.
@@ -37,28 +38,28 @@ The Docker container executes a [`start-notebook.sh` script](../base-notebook/st
 You can pass [Jupyter command line options](https://jupyter.readthedocs.io/en/latest/projects/jupyter-command.html) through the `start-notebook.sh` script when launching the container. For example, to secure the Notebook server with a custom password hashed using `IPython.lib.passwd()` instead of the default token, run the following:
 
 ```
-docker run -d -p 8888:8888 rarsenal/dafi-jupyter start-notebook.sh --NotebookApp.password='sha1:74ba40f8a388:c913541b7ee99d15d5ed31d4226bf7838f83a50e'
+docker run -d -p 8888:8888 -p 8883:8080 rarsenal/dafi-gp_jupyter start-notebook.sh --NotebookApp.password='sha1:74ba40f8a388:c913541b7ee99d15d5ed31d4226bf7838f83a50e'
 ```
 
 For example, to set the base URL of the notebook server, run the following:
 
 ```
-docker run -d -p 8888:8888 rarsenal/dafi-jupyter start-notebook.sh --NotebookApp.base_url=/some/path
+docker run -d -p 8888:8888 -p 8883:8080 rarsenal/dafi-gp_jupyter start-notebook.sh --NotebookApp.base_url=/some/path
 ```
 
 For example, to disable all authentication mechanisms (not a recommended practice):
 
 ```
-docker run -d -p 8888:8888 rarsenal/dafi-jupyter start-notebook.sh --NotebookApp.token=''
+docker run -d -p 8888:8888 -p 8883:8080 rarsenal/dafi-gp_jupyter start-notebook.sh --NotebookApp.token=''
 ```
 
 You can sidestep the `start-notebook.sh` script and run your own commands in the container. See the *Alternative Commands* section later in this document for more information.
 
 
-## Command Line Options 
+## Command-line Options
 
 ## dafi_pipeline.sh 
-Script for running custom panel configuration
+Script for running custom panel configuration in the container as a command line service
 
 ```
 usage="$(basename "$0") [--help] [-s n] -- DAFi pipeline script to transform, gate, and generate reports on the flowcytometry FCS 
@@ -77,10 +78,10 @@ same as nclusters)
 ### Sample docker run command
 
 ```bash
-docker run --rm -p 8888:8888 -v $host_dir:/home/jovyan/work dafi/jpynote start.sh dafi_pipeline.sh --nclusters 200
+docker run --rm -p 8888:8888 -v $host_dir:/home/jovyan/work -p 8883:8080 rarsenal/dafi-gp_jupyter start.sh dafi_pipeline.sh --nclusters 200
 ```
 
-where dafi/jpynote is the tag to the dafi jpynotebook container in your system and $host_dir is the directory with the dataset to be 
+where rarsenal/dafi-gp_jupyter is the tag to the dafi-gp_jupyter container in your system and $host_dir is the directory with the dataset to be 
 analyzed. 
 
 ### Requirements for the host directory ($host_dir): 
@@ -174,10 +175,10 @@ same as nclusters)
 ### Sample docker run command
 
 ```bash
-docker run --rm -p 8888:8888 -v $host_dir:/home/jovyan/work dafi/jpynote start.sh LJI132_pipeline.sh --panel 1 --nclusters 200
+docker run --rm -p 8888:8888 -v $host_dir:/home/jovyan/work -p 8883:8888 rarsenal/dafi-gp_jupyter start.sh LJI132_pipeline.sh --panel 1 --nclusters 200
 ```
 
-where dafi/jpynote is the tag to the dafi jpynotebook container in your system and $host_dir is the directory with the dataset to be
+where rarsenal/dafi-gp_jupyter is the tag to the dafi jpynotebook container in your system and $host_dir is the directory with the dataset to be
 analyzed.
 
 
@@ -207,7 +208,7 @@ You may mount SSL key and certificate files into a container and configure Jupyt
 ```
 docker run -d -p 8888:8888 \
     -v /some/host/folder:/etc/ssl/notebook \
-    rarsenal/dafi-jupyter start-notebook.sh \
+    DAFi/jpyenv start-notebook.sh \
     --NotebookApp.keyfile=/etc/ssl/notebook/notebook.key
     --NotebookApp.certfile=/etc/ssl/notebook/notebook.crt
 ```
@@ -217,7 +218,7 @@ Alternatively, you may mount a single PEM file containing both the key and certi
 ```
 docker run -d -p 8888:8888 \
     -v /some/host/folder/notebook.pem:/etc/ssl/notebook.pem \
-    rarsenal/dafi-jupyter start-notebook.sh \
+    DAFi/jpyenv start-notebook.sh \
     --NotebookApp.certfile=/etc/ssl/notebook.pem
 ```
 
@@ -251,13 +252,13 @@ conda install some-package
 The `start.sh` script supports the same features as the default `start-notebook.sh` script (e.g., `GRANT_SUDO`), but allows you to specify an arbitrary command to execute. For example, to run the text-based `ipython` console in a container, do the following:
 
 ```
-docker run -it --rm rarsenal/dafi-jupyter start.sh ipython
+docker run -it --rm DAFi/jpyenv start.sh ipython
 ```
 
 Or, to run JupyterLab instead of the classic notebook, run the following:
 
 ```
-docker run -it --rm -p 8888:8888 rarsenal/dafi-jupyter start.sh jupyter lab
+docker run -it --rm -p 8888:8888 DAFi/jpyenv start.sh jupyter lab
 ```
 
 This script is particularly useful when you derive a new Dockerfile from this image and install additional Jupyter applications with subcommands like `jupyter console`, `jupyter kernelgateway`, etc.
