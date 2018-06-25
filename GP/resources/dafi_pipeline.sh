@@ -73,6 +73,7 @@ else
 	else
 		echo "No Preprocessed dir found! Aborting!"
 		exit 1
+	fi
 fi
 
 cp $work/config/inclusion.config pipeline.config
