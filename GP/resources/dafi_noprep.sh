@@ -12,6 +12,7 @@ where:
 
 if grep -q avx2 /proc/cpuinfo; then optimize=true; else optimize=false; fi
 
+skipPrep=false
 numOfClusters=100
 numOfReClusters=$numOfClusters
 numOfCores=$(grep -c ^processor /proc/cpuinfo)
@@ -34,36 +35,12 @@ cwd=$(pwd)
 Label=${PWD##*/}
 
 
-#Transformation and compensation using FCSTrans
-#Convert FCS binary to txt format 
-if [ -d "TXT" ]; then
-       	rm -Rf TXT
-      	mkdir TXT
+if [ -d $work/Preprocessed ]; then
+	echo "Found Preprocessed Data, Skipping preprocessing"
 else
-       	mkdir TXT
+	echo "No Preprocessed dir found! Aborting!"
+	exit 1
 fi
-cd TXT
-run_FCSTrans2TXT.R $work/FCS
-cd ..
-
-#Arrange columns and replace labels
-if [ -d "Preprocessed" ]; then
-       	rm -Rf Preprocessed
-       	mkdir Preprocessed
-else
-       	mkdir Preprocessed
-fi
-cd Preprocessed
-count=1
-for f in ../TXT/*.txt
-do
-filename=$(basename "$f");
-(ArrangeHeader.awk $work/config/header.lst $work/config/header.txt $f > $filename)&
-if [ $(($count % $numOfCores)) -eq 0 ]; then wait; fi
-count=$((count+1));
-done
-wait
-cd ..
 
 cp $work/config/inclusion.config pipeline.config
 
@@ -75,7 +52,7 @@ else
         mkdir Gated
 fi
 cd Gated
-for file in $cwd/Preprocessed/*
+for file in $work/Preprocessed/*
 	do
 	filepath=$(basename $file )
 	extension="${filepath##*.}"
