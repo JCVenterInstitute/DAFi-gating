@@ -127,7 +127,7 @@ timeTransform <- function(transformationId = "defaultTimeTransform",
 #   > ad008 = read.FCS('ad008.fcs', transformation=F)
 #   > ad008_ipc = convertfcs(ad008r)
 # @param fcs    flowFrame object
-convertfcs <- function(fcs_raw) {
+convertfcs <- function(fcs_raw, compen="internal") {
   debug = TRUE
   #check file type and FCS version
   if (class(fcs_raw)[1] != "flowFrame") {
@@ -141,11 +141,25 @@ convertfcs <- function(fcs_raw) {
     datatype = unlist(keywords['$DATATYPE']) #check data type
     if (datatype == 'F') {
       #apply compensation if available
-      spill = keyword(fcs_raw)$SPILL
+      if (compen == "internal") {
+        spill = keyword(fcs_raw)$SPILL
+      }else if ( file_ext(compen) == "xlsx" ){
+        print(paste("Applying compensation matrix file: ", compen))
+        spill = as.matrix(read.xlsx(compen,
+                                    rowNames = TRUE,colNames = TRUE))
+      }else if ( file_ext(compen) == "csv" ){
+        spill = as.matrix(read.csv(compen,
+                                    rowNames = TRUE,colNames = TRUE))
+      }else {
+        spill = NULL
+      }
       
       if (debug) print("check spill")
       if (is.null(spill) == FALSE) {
+        colnames(spill) <- gsub(x = colnames(spill),
+                                              pattern = "\\.", replacement = " ")
         tryCatch({ fcs_raw = compensate(fcs_raw, spill) }, error = function(ex) { str(ex); })
+        print ("applied compensation!")
       }
       
       colsToUse = as.integer(which(!is.na(fcs_raw@parameters[[2]]), TRUE))
@@ -210,7 +224,7 @@ convertfcs <- function(fcs_raw) {
 # example:
 #   > convertfcs('~/data/ad008')
 #   This will convert ad008.fcs and create ad008_ip_channel.txt
-processfcsfile <- function(fcsfile, verbose=F, overwrite=F,
+processfcsfile <- function(fcsfile, compen="internal", verbose=F, overwrite=F,
                            renameSource=F, removeName=T, copyRaw=T, convert=T, savekeys=T) {
   
   print("in processfcsfile")
@@ -299,13 +313,13 @@ processfcsfile <- function(fcsfile, verbose=F, overwrite=F,
       if (convert) {
         if (verbose) print(paste("    Converting", fcsfile))
         
-        fcs <- convertfcs(fcs_raw)
+        fcs <- convertfcs(fcs_raw, compen=compen)
         
         if(!is.null(fcs)){
           cdata <- exprs(fcs)
           
           #write.FCS(fcs, paste(outputfilename,"fcs",sep="."))
-          if (verbose) print(paste("      Converted to", outputfilename))
+          #if (verbose) print(paste("      Converted to", outputfilename))
           channelfile<-paste(outputfilename, "txt", sep=".")
           write.table(cdata, file=channelfile, quote=F, row.names=F,
                       col.names=T, sep='\t', append=F)
@@ -348,7 +362,7 @@ processfcsfile <- function(fcsfile, verbose=F, overwrite=F,
 # example:
 #   > ipconvert('~/data/test')
 #   > ipconvert(c('/tmp/a.fcs', 't101.fcs', '/data')
-ipconvert <- function(entry, verbose=F, overwrite=F, renameSource=F, removeName=F, copyRaw=F, convert=T, savekeys=T, level=1) {
+ipconvert <- function(entry, compen="internal", verbose=F, overwrite=F, renameSource=F, removeName=F, copyRaw=F, convert=T, savekeys=T, level=1) {
   
   success=F
   print(paste("Running ipconvert in level",level," and entry ",entry, sep=" "))  
@@ -403,7 +417,7 @@ ipconvert <- function(entry, verbose=F, overwrite=F, renameSource=F, removeName=
               fileinfolist<-parLapply(cl, files, function(x) processfcsfile(x, verbose=verbose, overwrite=overwrite,
                                                                             renameSource=renameSource, removeName=removeName, copyRaw=copyRaw, convert=convert, savekeys=savekeys))
             }else {
-              processfcsfile(files[1], verbose=verbose, overwrite=overwrite,
+              processfcsfile(files[1], compen=compen, verbose=verbose, overwrite=overwrite,
                              renameSource=renameSource, removeName=removeName, copyRaw=copyRaw, convert=convert, savekeys=savekeys)
             }
             
@@ -428,7 +442,7 @@ ipconvert <- function(entry, verbose=F, overwrite=F, renameSource=F, removeName=
       } else {
         print("processing fcs")
         
-        processfcsfile(entry, verbose=verbose, overwrite=overwrite,
+        processfcsfile(entry, compen=compen, verbose=verbose, overwrite=overwrite,
                        renameSource=renameSource, removeName=removeName, copyRaw=copyRaw, convert=convert, savekeys=savekeys)
         
       }
