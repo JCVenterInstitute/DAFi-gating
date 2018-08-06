@@ -197,10 +197,12 @@ convertfcs <- function(fcs_raw, compen = "internal") {
       for (i in 1:length(markers)) {
         rangekeyword = paste("$P", i, "R", sep="")
         #if (debug) print(paste("  range keyword:", rangekeyword))
-        if (debug) print(paste("  range value:", keywords[rangekeyword]))
+        print(markers[i])
         channelrange = as.numeric(keywords[rangekeyword])
+        if (debug) print(paste(" range value:", as.character(channelrange)))
         markertype = getMarkerType(markers[i])
         if ((markertype != "SCATTER") & (markertype != "TIME")) {
+
           markerCols <- c(markerCols, as.integer(i))
           markerlist <- c(markerlist, FCSTransTransform(channelrange = channelrange))
         } else if (markertype == "SCATTER") {
@@ -238,6 +240,7 @@ convertfcs <- function(fcs_raw, compen = "internal") {
       lgcl <- transformList(listC, markerlist)
       
       fcs <- transform(fcs_raw, scattT)
+      print("Done with transformation of scatter channels")
       #fcs <- transform(fcs, timeT)
       fcs <- transform(fcs, lgcl)
       print("Done with transformation of non-scatter channels")
