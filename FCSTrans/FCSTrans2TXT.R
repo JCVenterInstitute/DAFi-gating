@@ -141,6 +141,10 @@ convertfcs <- function(fcs_raw, compen = "internal") {
     return(FALSE)
   }
   keywords = keyword(fcs_raw)
+  rangekeyword = paste("$P", i, "R", sep="")
+  #if (debug) print(paste("  range keyword:", rangekeyword))
+  if (debug) print(paste("  range value:", keywords[rangekeyword]))
+  channelrange = as.numeric(keywords[rangekeyword])
   if (debug)
     print(paste("FCS version:", keywords$FCSversion))
   if (debug)
@@ -223,9 +227,9 @@ convertfcs <- function(fcs_raw, compen = "internal") {
       listS = colnames(fcs_raw)[1:colsToUse[1] - 1]
       #timeC = colnames(fcs_raw)[17]
       
-      scattT <- transformList(listS, scatterTransform())
+      scattT <- transformList(listS, scatterTransform(channelrange = channelrange))
       #timeT <- transformList(timeC, timeTransform())
-      lgcl <- transformList(listC, FCSTransTransform())
+      lgcl <- transformList(listC, FCSTransTransform(channelrange = channelrange))
       
       fcs <- transform(fcs_raw, scattT)
       #fcs <- transform(fcs, timeT)
