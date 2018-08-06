@@ -166,9 +166,20 @@ convertfcs <- function(fcs_raw, compen="internal") {
         print ("applied compensation!")
       }
       
+      
+      markers = colnames(fcs_raw)
+      markerCols = list()
+      if (debug) print("loop through markers")
+      for (i in 1:length(markers)){
+        markertype = getMarkerType(markers[i])
+        if ((markertype != "SCATTER") & (markertype != "TIME")) {
+          markerCols<-c(markerCols, as.integer(i))
+        } 
+      }
+      
       colsToUse = as.integer(which(!is.na(fcs_raw@parameters[[2]]), TRUE))
       
-      if(length(colsToUse)>0){
+      if(length(colsToUse)==length(markerCols)){
         #rename channels to marker type
         if(debug){
           print("renaming channels to marker type...")
@@ -176,16 +187,8 @@ convertfcs <- function(fcs_raw, compen="internal") {
           print(as.character(fcs_raw@parameters[[2]])[colsToUse])}
         colnames(fcs_raw)[colsToUse] <-
           as.character(fcs_raw@parameters[[2]])[colsToUse]
-      }else if(length(colsToUse)==0){
-        markers = colnames(fcs_raw)
-        
-        if (debug) print("loop through markers")
-        for (i in 1:length(markers)){
-          markertype = getMarkerType(markers[i])
-          if ((markertype != "SCATTER") & (markertype != "TIME")) {
-            colsToUse<-c(colsToUse, as.integer(i))
-          } 
-        }
+      }else {
+        colsToUse = markerCols
       }
       
       
