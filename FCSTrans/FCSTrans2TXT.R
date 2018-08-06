@@ -141,10 +141,7 @@ convertfcs <- function(fcs_raw, compen = "internal") {
     return(FALSE)
   }
   keywords = keyword(fcs_raw)
-  rangekeyword = paste("$P", i, "R", sep="")
-  #if (debug) print(paste("  range keyword:", rangekeyword))
-  if (debug) print(paste("  range value:", keywords[rangekeyword]))
-  channelrange = as.numeric(keywords[rangekeyword])
+  
   if (debug)
     print(paste("FCS version:", keywords$FCSversion))
   if (debug)
@@ -196,6 +193,10 @@ convertfcs <- function(fcs_raw, compen = "internal") {
       if (debug)
         print("loop through markers")
       for (i in 1:length(markers)) {
+        rangekeyword = paste("$P", i, "R", sep="")
+        #if (debug) print(paste("  range keyword:", rangekeyword))
+        if (debug) print(paste("  range value:", keywords[rangekeyword]))
+        channelrange = as.numeric(keywords[rangekeyword])
         markertype = getMarkerType(markers[i])
         if ((markertype != "SCATTER") & (markertype != "TIME")) {
           markerCols <- c(markerCols, as.integer(i))
