@@ -153,7 +153,7 @@ convertfcs <- function(fcs_raw, compen="internal") {
       }else if ( file_ext(compen) == "csv" ){
         print(paste("Applying compensation matrix file: ", compen))
         spill = as.matrix(read.csv(compen,
-                                   header = TRUE, check.names = FALSE))
+                                   header = TRUE, row.names = 1, check.names = FALSE))
       }else {
         spill = NULL
       }
