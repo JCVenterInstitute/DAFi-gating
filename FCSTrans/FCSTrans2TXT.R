@@ -188,7 +188,7 @@ convertfcs <- function(fcs_raw, compen="internal") {
         colnames(fcs_raw)[colsToUse] <-
           as.character(fcs_raw@parameters[[2]])[colsToUse]
       }else {
-        colsToUse = markerCols
+        colsToUse = as.integer(markerCols)
       }
       
       
