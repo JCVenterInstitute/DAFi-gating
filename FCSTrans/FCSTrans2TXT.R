@@ -194,6 +194,13 @@ convertfcs <- function(fcs_raw, compen = "internal") {
         print("loop through markers")
       scatterlist = list()
       markerlist = list()
+
+      if (debug) {
+        print("Transformation via FCSTrans...")
+      }
+
+      fcs = fcs_raw
+
       for (i in 1:length(markers)) {
         rangekeyword = paste("$P", i, "R", sep="")
         #if (debug) print(paste("  range keyword:", rangekeyword))
@@ -201,13 +208,21 @@ convertfcs <- function(fcs_raw, compen = "internal") {
         channelrange = as.numeric(keywords[rangekeyword])
         if (debug) print(paste(" range value:", as.character(channelrange)))
         markertype = getMarkerType(markers[i])
+	print(markertype)
         if ((markertype != "SCATTER") & (markertype != "TIME")) {
-
+	  print("transforming marker channel")
           markerCols <- c(markerCols, as.integer(i))
-          markerlist <- c(markerlist, FCSTransTransform(channelrange = channelrange))
+          markerlist <- transformList(markers[i], FCSTransTransform(channelrange = channelrange))
+          fcs <- transform(fcs, markerlist)
+ 	  print("done transforming marker channel")
         } else if (markertype == "SCATTER") {
-          scatterlist <- c(scatterlist, scatterTransform(channelrange = channelrange))
-        }
+	  print("transforming scatter channel")
+          scatterlist <- transformList(markers[i], scatterTransform(channelrange = channelrange))
+          fcs <- transform(fcs, scatterlist)
+	  print("done transforming scatter channel)")
+        } else if (markertype == "TIME") {
+	  fcs <- transform(fcs, transformList(markers[i], timeTransform(channelrange = channelrange)))	
+	}
       }
       
       colsToUse = as.integer(which(!is.na(fcs_raw@parameters[[2]]), TRUE))
@@ -226,24 +241,20 @@ convertfcs <- function(fcs_raw, compen = "internal") {
       }
       
       
-      
-      if (debug) {
-        print("Transformation via FCSTrans...")
-      }
       # transformation: linear on time and scatter channels, FCSTrans on marker channels
-      listC = colnames(fcs_raw)[colsToUse]
-      listS = colnames(fcs_raw)[1:colsToUse[1] - 1]
+      #listC = colnames(fcs_raw)[colsToUse]
+      #listS = colnames(fcs_raw)[1:colsToUse[1] - 1]
       #timeC = colnames(fcs_raw)[17]
       
-      scattT <- transformList(listS, scatterlist)
+      #scattT <- transformList(listS, scatterlist)
       #timeT <- transformList(timeC, timeTransform())
-      lgcl <- transformList(listC, markerlist)
+      #lgcl <- transformList(listC, markerlist)
       
-      fcs <- transform(fcs_raw, scattT)
-      print("Done with transformation of scatter channels")
+      #fcs <- transform(fcs_raw, scattT)
+      #print("Done with transformation of scatter channels")
       #fcs <- transform(fcs, timeT)
-      fcs <- transform(fcs, lgcl)
-      print("Done with transformation of non-scatter channels")
+      #fcs <- transform(fcs, lgcl)
+      #print("Done with transformation of non-scatter channels")
     } else if (datatype == 'I') {
       fcs = fcs_raw
     } else {
