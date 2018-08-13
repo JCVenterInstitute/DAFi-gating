@@ -154,11 +154,11 @@ convertfcs <- function(fcs_raw, compen = "internal") {
       if (compen == "internal") {
         print(paste("Applying compensation from fcs ", compen))
         spill = keyword(fcs_raw)$SPILL
-      } else if (tools:file_ext(compen) == "xlsx") {
+      } else if (file_ext(compen) == "xlsx") {
         print(paste("Applying compensation matrix file: ", compen))
         spill = as.matrix(read.xlsx(compen,
                                     rowNames = TRUE, colNames = TRUE))
-      } else if (tools:file_ext(compen) == "csv") {
+      } else if (file_ext(compen) == "csv") {
         print(paste("Applying compensation matrix file: ", compen))
         spill = as.matrix(read.csv(
           compen,
@@ -510,6 +510,7 @@ ipconvert <-
       assign("cl", makeCluster(no_cores, outfile = "cltest.out"), envir = .GlobalEnv)
       clusterExport(cl, ls(.GlobalEnv), envir = .GlobalEnv)
       clusterEvalQ(cl, library(flowCore))
+      clusterEvalQ(cl, library(tools))
       
       #write(paste("Original","New", sep = "\t"), file="filetable.out",append=TRUE)
       #write(paste("Original","New", sep = "\t"), file="nametable.out",append=TRUE)
