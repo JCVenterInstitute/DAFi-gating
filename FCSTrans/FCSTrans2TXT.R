@@ -194,35 +194,44 @@ convertfcs <- function(fcs_raw, compen = "internal") {
         print("loop through markers")
       scatterlist = list()
       markerlist = list()
-
+      
       if (debug) {
         print("Transformation via FCSTrans...")
       }
-
+      
       fcs = fcs_raw
-
+      
       for (i in 1:length(markers)) {
-        rangekeyword = paste("$P", i, "R", sep="")
+        rangekeyword = paste("$P", i, "R", sep = "")
         #if (debug) print(paste("  range keyword:", rangekeyword))
         print(markers[i])
         channelrange = as.numeric(keywords[rangekeyword])
-        if (debug) print(paste(" range value:", as.character(channelrange)))
+        if (debug)
+          print(paste(" range value:", as.character(channelrange)))
         markertype = getMarkerType(markers[i])
-	print(markertype)
+        print(markertype)
         if ((markertype != "SCATTER") & (markertype != "TIME")) {
-	  print("transforming marker channel")
+          print("transforming marker channel")
           markerCols <- c(markerCols, as.integer(i))
-          markerlist <- transformList(markers[i], FCSTransTransform(channelrange = channelrange))
+          markerlist <-
+            transformList(markers[i],
+                          FCSTransTransform(channelrange = channelrange))
           fcs <- transform(fcs, markerlist)
- 	  print("done transforming marker channel")
+          print("done transforming marker channel")
         } else if (markertype == "SCATTER") {
-	  print("transforming scatter channel")
-          scatterlist <- transformList(markers[i], scatterTransform(channelrange = channelrange))
+          print("transforming scatter channel")
+          scatterlist <-
+            transformList(markers[i],
+                          scatterTransform(channelrange = channelrange))
           fcs <- transform(fcs, scatterlist)
-	  print("done transforming scatter channel)")
+          print("done transforming scatter channel)")
         } else if (markertype == "TIME") {
-	  fcs <- transform(fcs, transformList(markers[i], timeTransform(channelrange = channelrange)))	
-	}
+          fcs <-
+            transform(fcs, transformList(
+              markers[i],
+              timeTransform(channelrange = channelrange)
+            ))
+        }
       }
       
       colsToUse = as.integer(which(!is.na(fcs_raw@parameters[[2]]), TRUE))
@@ -372,7 +381,7 @@ processfcsfile <-
         }, error = function(ex) {
           if (verbose)
             print (ex)
-            print ("ignore and continue")
+          print ("ignore and continue")
         })
         
         
@@ -562,6 +571,7 @@ ipconvert <-
                   parLapply(cl, files, function(x)
                     processfcsfile(
                       x,
+                      compen = compen,
                       verbose = verbose,
                       overwrite = overwrite,
                       renameSource =
