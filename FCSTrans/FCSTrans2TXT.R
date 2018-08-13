@@ -511,6 +511,7 @@ ipconvert <-
       clusterExport(cl, ls(.GlobalEnv), envir = .GlobalEnv)
       clusterEvalQ(cl, library(flowCore))
       clusterEvalQ(cl, library(tools))
+      clusterEvalQ(cl, library(openxlsx))
       
       #write(paste("Original","New", sep = "\t"), file="filetable.out",append=TRUE)
       #write(paste("Original","New", sep = "\t"), file="nametable.out",append=TRUE)
