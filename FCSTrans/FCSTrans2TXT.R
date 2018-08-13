@@ -4,8 +4,8 @@
 #
 suppressMessages(library(parallel))
 suppressMessages(library(flowCore))
-suppressMessages(library(tools))
 suppressMessages(library(openxlsx))
+suppressMessages(library(tools))
 
 anonymous <- function(name) {
   if (is.null(nametable[[name]])) {
@@ -154,11 +154,11 @@ convertfcs <- function(fcs_raw, compen = "internal") {
       if (compen == "internal") {
         print(paste("Applying compensation from fcs ", compen))
         spill = keyword(fcs_raw)$SPILL
-      } else if (file_ext(compen) == "xlsx") {
+      } else if (tools:file_ext(compen) == "xlsx") {
         print(paste("Applying compensation matrix file: ", compen))
         spill = as.matrix(read.xlsx(compen,
                                     rowNames = TRUE, colNames = TRUE))
-      } else if (file_ext(compen) == "csv") {
+      } else if (tools:file_ext(compen) == "csv") {
         print(paste("Applying compensation matrix file: ", compen))
         spill = as.matrix(read.csv(
           compen,
