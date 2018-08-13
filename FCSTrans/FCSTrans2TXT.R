@@ -519,7 +519,30 @@ ipconvert <-
       
     }
     
+    if (compen == "internal") {
+      if (file.exists(compen)) {
+      print(paste("Applying compensation from fcs ", compen))
+      }else {
+        print("comp file not found!")
+      }
+      
+    } else if (file_ext(compen) == "xlsx") {
+      if (file.exists(compen)) {
+        print(paste("Applying compensation matrix file: ", compen))
+      }else {
+        print("comp file not found!")
+      }
+      
+    } else if (file_ext(compen) == "csv") {
+      if (file.exists(compen)) {
+        print(paste("Applying compensation matrix file: ", compen))
+      }else {
+        print("comp file not found!")
+      }
+    }
+    
     entryclass = class(entry)
+    
     
     
     if (is.vector(entry) && length(entry) > 1) {
