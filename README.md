@@ -7,7 +7,7 @@ Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., 
 	
 ### Copyright: Authors and J. Craig Venter Institute
 	
-Paper link: https://doi.org/10.1002/cyto.a.23371
+Paper link: https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.23371
 
 Lee AJ, Chang I, Burel JG, Lindestam Arlehamn CS, Mandava A, Weiskopf D, Peters B, Sette A, Scheuermann RH, Qian Y. DAFi: A directed recursive data filtering and clustering approach for improving and interpreting data clustering identification of cell populations from polychromatic flow cytometry data. Cytometry A, 2018. PMID: 29665244
 
