@@ -35,7 +35,7 @@ There are two concurrent implementations of the DAFi framework, one for the HPC 
 
 1) A raw FCS file for the R implementation of DAFi or a transformed text-based FCS file for the C implementation of DAFi.
 	
-2) inclusion.config: a 11-column tab delimited file, for recursive data filtering
+2) inclusion.config: a 12-column tab delimited file, for recursive data filtering
 
 |Pop_ID|DimensionX|DimensionY|Min_X|Max_X|Min_Y|Max_Y|Parent_ID|Cluster_Type(0: Clustering; 1: Bisecting; 2: Slope-based)|Visualize_or_Not|Recluster_or_Not|Cell_Phenotype(optional)|
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
