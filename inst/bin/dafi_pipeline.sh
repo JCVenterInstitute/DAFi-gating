@@ -46,7 +46,17 @@ else
         mkdir TXT
 fi
 cd TXT
-run_FCSTrans2TXT.R $cwd/FCS
+if [ -f $cwd/config/comp.txt ]; then
+    run_FCSTrans2TXT.R $cwd/FCS comp.txt
+elif [ -f $cwd/config/comp.csv ]
+then
+    run_FCSTrans2TXT.R $cwd/FCS comp.csv
+elif [ -f $cwd/config/comp.xlsx ]
+then
+    run_FCSTrans2TXT.R $cwd/FCS comp.xlsx
+else
+    run_FCSTrans2TXT.R $cwd/FCS
+fi
 cd ..
 
 #Arrange columns and replace labels
