@@ -111,3 +111,9 @@ USER $NB_UID
 ENV PATH="/var/DAFi-gating/inst/bin:/var/DAFi-gating/FCSTrans:/var/DAFi-gating/Python:${PATH}"
 ENV LD_LIBRARY_PATH="/opt/conda/lib"
 
+USER root
+
+RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile && \
+    Rscript -e "install.packages('openxlsx', dependencies=TRUE)"
+
+USER $NB_UID
