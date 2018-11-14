@@ -28,3 +28,4 @@ RUN cd /usr/src/myapp && \
 EXPOSE 8080
 #EXPOSE 9001
 VOLUME /home/$NB_USER/work
+USER $NB_UID
