@@ -130,6 +130,11 @@ parsePercentage.awk */DU*percentage.txt > Batch_percentages.txt
 parsePercentage.awk */DU*events.txt > Batch_events.txt
 cd ..
 echo "generating html report..."
+
+cp ../AutoReport.ipynb .
 time jupyter nbconvert --ExecutePreprocessor.timeout=10000 --to html_embed --execute AutoReport.ipynb
+mkdir Reports
+mv *.html Reports
+
 echo "done!"
 
