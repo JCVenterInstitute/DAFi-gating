@@ -1,0 +1,57 @@
+#
+# Example GenePattern configuration file for the 'virtual queue' feature.
+#
+# When a 'job.virtualQueue' property is set, this defines the queue name that
+# is stored in the GP database for estimating pending time and other job reporting
+# calculations.
+#
+# The 'job.queue' value is used as the command line arg for the external queuing system,
+# such as the lsf bsub command.
+#
+default.properties:
+    executor: LSF
+
+executor.properties: {
+    #"genepattern_short": {
+    #    job.queue: genepattern,
+    #    job.virtualQueue: genepattern_short
+    #},
+    "genepattern_long": {
+        # this is the queue name used on the LSF bsub command line
+        job.queue: genepattern,
+        # this is the queue name in the GP database, for estimating pending time
+        job.virtualQueue: genepattern_long,
+        job.extraArgs: [ "-g", "/genepattern/gpprod/long",  "-m", "node1448 node1449 node1450 node1451 node1452 node1453 node1454 node1455" ]
+    }
+}
+
+executors:
+    #
+    # Lsf integration via the JobRunner API
+    #
+    LSF:
+        classname: org.genepattern.server.executor.drm.JobExecutor
+        configuration.properties:
+            jobRunnerClassname: org.genepattern.drm.impl.lsf.core.CmdLineLsfRunner
+            jobRunnerName: CmdLineLsfRunner
+        default.properties:
+            #executor.props: "genepattern_short"
+            job.queue: genepattern
+            job.virtualQueue: genepattern_short
+            # save lsf output to the '.lsf.out' file in the jobResults directory
+            job.logFile: .lsf.out
+
+    LocalExecutor: 
+        classname: org.genepattern.server.executor.RuntimeCommandExecutor
+
+module.properties:
+    TopHat:
+        executor.props: "genepattern_long"
+    MyGpLongCustomMem:
+        executor.props: "genepattern_long"
+        job.memory: 12 Gb
+    MyLocalExecutor:
+        executor: LocalExecutor
+    MyCustomQueue:
+        executor: LocalExecutor
+        job.queue: my_queue
