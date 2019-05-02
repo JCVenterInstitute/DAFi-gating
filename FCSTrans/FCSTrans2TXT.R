@@ -51,12 +51,12 @@ ipscatter <- function (x, channelrange = 262144) {
 }
 
 # immport time function - convert time values to channel output
-# linear transformation for time parameter, not needed because of the use of FCSTransTransform
-#iptime <- function (x, channelrange) {
+# linear transformation for time parameter
+iptime <- function (x, channelrange) {
   # use simple cutoff for now
-#  y = sapply(x, ipfloor)
-#  y
-#}
+  y = sapply(x, ipfloor)
+  y
+}
 
 
 # get marker type
