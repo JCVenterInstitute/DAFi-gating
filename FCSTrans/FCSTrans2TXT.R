@@ -34,12 +34,12 @@ ipceil <- function (x, cutoff = 0, target = 0) {
 }
 
 # Convert fluorescent values to channel output using log transformation
-# logicle transformation after compensation
-iplog <- function(x) {
-  x = sapply(x, ipfloor, cutoff = 1, target = 1)
-  y = 1024 * log10(x) - 488.6
-  y
-}
+# log10 transformation, not needed because of the use of FCSTransTransform
+#iplog <- function(x) {
+#  x = sapply(x, ipfloor, cutoff = 1, target = 1)
+#  y = 1024 * log10(x) - 488.6
+#  y
+#}
 
 # immport linear function - convert scatter values to channel output
 # linear transformation
@@ -51,12 +51,12 @@ ipscatter <- function (x, channelrange = 262144) {
 }
 
 # immport time function - convert time values to channel output
-# linear transformation
-iptime <- function (x, channelrange) {
+# linear transformation for time parameter, not needed because of the use of FCSTransTransform
+#iptime <- function (x, channelrange) {
   # use simple cutoff for now
-  y = sapply(x, ipfloor)
-  y
-}
+#  y = sapply(x, ipfloor)
+#  y
+#}
 
 
 # get marker type
