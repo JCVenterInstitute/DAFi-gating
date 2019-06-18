@@ -4,11 +4,40 @@
 
 set -e
 
-# Sync with Github repo for latest DAFi scripts and notebooks
-cd /var/DAFi-gating
-git pull
+# A POSIX variable
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
-cp /var/DAFi-gating/GP/resources/* /opt/genepattern/resources
+# Sync with Github repo for latest DAFi scripts and notebooks
+
+while getopts "u?f?:" opt; do
+    case "$opt" in
+    u)  cd /var/DAFi-gating
+	git pull
+	echo "copying resources from github"
+	cp /var/DAFi-gating/GP/resources/* /opt/genepattern/resources
+	nohup /opt/genepattern/StartGenePatternServer &
+
+        ;;
+    f)  cd /var/DAFi-gating
+        git pull
+	echo "copying FIONA resources from github"
+        cp /var/DAFi-gating/GP/fiona_resources/* /opt/genepattern/resources
+	nohup /opt/genepattern/StartGenePatternServer &
+
+        ;;
+    esac
+done
+
+declare -a ARGS
+for var in "$@"; do
+    # Ignore known bad arguments
+    if [ "$var" == '-f' ] || [ "$var" == '-u' ] ; then
+        continue
+    fi
+    ARGS[${#ARGS[@]}]="$var"
+done
+
+set -- "${ARGS[@]}"
 
 cd $HOME
 if [ -d "work" ]; then
@@ -17,7 +46,6 @@ else
 	cp /var/DAFi-gating/Notebooks/*.ipynb $HOME
 fi
 
-nohup /opt/genepattern/StartGenePatternServer &
 
 # Exec the specified command or fall back on bash
 if [ $# -eq 0 ]; then

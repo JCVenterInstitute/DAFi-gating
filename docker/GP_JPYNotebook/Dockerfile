@@ -10,9 +10,6 @@ RUN apt-get update && \
     openjdk-8-jre &&  apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ADD start.sh /usr/local/bin/start.sh
-ADD start-notebook.sh /usr/local/bin/start-notebook.sh
-
 RUN mkdir /usr/src/myapp
 
 COPY install/* /usr/src/myapp/
@@ -28,4 +25,9 @@ RUN cd /usr/src/myapp && \
 EXPOSE 8080
 #EXPOSE 9001
 VOLUME /home/$NB_USER/work
+
+ADD start-notebook.sh /usr/local/bin/start-notebook.sh
+
+ADD start.sh /usr/local/bin/start.sh
+
 USER $NB_UID
