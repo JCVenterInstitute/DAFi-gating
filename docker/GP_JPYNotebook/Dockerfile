@@ -30,4 +30,7 @@ ADD start-notebook.sh /usr/local/bin/start-notebook.sh
 
 ADD start.sh /usr/local/bin/start.sh
 
+RUN cd /var/DAFi-gating && \
+	git pull
+
 USER $NB_UID
