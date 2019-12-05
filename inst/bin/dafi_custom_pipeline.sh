@@ -45,10 +45,19 @@ cp $headerList $cwd/config/header.lst
 cp $headerReplace $cwd/config/header.txt
 echo "Copying inclusion config "$inclusionCfg
 cp $inclusionCfg $cwd/config/inclusion.config
-echo "Copyong exclusion config "$exclusionCfg
+echo "Copying exclusion config "$exclusionCfg
 cp $exclusionCfg $cwd/config/exclusion.config
 
-#[ -z "$inputComp" ] && echo "No input compensation file specified" || cp $inputComp $cwd/config
+echo "Copying  compensation file "$inputComp
+compFileExt="${inputComp##*.}"
+if [[ $compFileExt == "txt" ]]; then
+    cp $inputComp $cwd/config/comp.txt
+elif [[ $compFileExt == "csv" ]]; then
+    cp $inputComp $cwd/config/comp.csv
+elif [[ $compFileExt == "xlsx" ]]; then
+    cp $inputComp $cwd/config/comp.xlsx
+fi
+
 echo "copying FCS files..."
 mkdir -p FCS
 while read file; do 
@@ -66,13 +75,13 @@ else
 fi
 cd TXT
 if [ -f $cwd/config/comp.txt ]; then
-    run_FCSTrans2TXT.R $cwd/FCS comp.txt
+    run_FCSTrans2TXT.R $cwd/FCS $cwd/config/comp.txt
 elif [ -f $cwd/config/comp.csv ]
 then
-    run_FCSTrans2TXT.R $cwd/FCS comp.csv
+    run_FCSTrans2TXT.R $cwd/FCS $cwd/config/comp.csv
 elif [ -f $cwd/config/comp.xlsx ]
 then
-    run_FCSTrans2TXT.R $cwd/FCS comp.xlsx
+    run_FCSTrans2TXT.R $cwd/FCS $cwd/config/comp.xlsx
 else
     run_FCSTrans2TXT.R $cwd/FCS
 fi

@@ -172,6 +172,7 @@ convertfcs <- function(fcs_raw, compen = "internal") {
       
       if (debug)
         print("check spill")
+        print(spill)
       if (is.null(spill) == FALSE) {
         colnames(spill) <- gsub(
           x = colnames(spill),
@@ -288,8 +289,7 @@ convertfcs <- function(fcs_raw, compen = "internal") {
 # example:
 #   > convertfcs('~/data/ad008')
 #   This will convert ad008.fcs and create ad008_ip_channel.txt
-processfcsfile <-
-  function(fcsfile,
+processfcsfile <- function(fcsfile,
            compen = "internal",
            verbose = F,
            overwrite = F,
@@ -302,6 +302,8 @@ processfcsfile <-
     print(
       paste(
         "parameters:",
+        "compen",
+        compen,
         "verbose",
         verbose,
         "overwrite",
@@ -319,6 +321,7 @@ processfcsfile <-
         sep = " "
       )
     )
+    print("INSIDE PROCESS FCS")
     
     isvalid = F
     tryCatch({
@@ -522,28 +525,33 @@ ipconvert <-
     if (compen == "internal") {
       if (file.exists(compen)) {
       print(paste("Applying compensation from fcs ", compen))
+      #spill = keyword(entry)$SPILL
       }else {
         print("comp file not found!")
       }
-      
     } else if (file_ext(compen) == "xlsx") {
       if (file.exists(compen)) {
         print(paste("Applying compensation matrix file: ", compen))
+       # spill = as.matrix(read.xlsx(compen,
+        #                            rowNames = TRUE, colNames = TRUE))
       }else {
         print("comp file not found!")
       }
-      
     } else if (file_ext(compen) == "csv") {
       if (file.exists(compen)) {
         print(paste("Applying compensation matrix file: ", compen))
+       # spill = as.matrix(read.csv(
+        #  compen,
+         # header = TRUE,
+          #row.names = 1,
+        #  check.names = FALSE
+       # ))
       }else {
         print("comp file not found!")
       }
     }
     
     entryclass = class(entry)
-    
-    
     
     if (is.vector(entry) && length(entry) > 1) {
       if (verbose)
@@ -599,8 +607,7 @@ ipconvert <-
                       compen = compen,
                       verbose = verbose,
                       overwrite = overwrite,
-                      renameSource =
-                        renameSource,
+                      renameSource = renameSource,
                       removeName = removeName,
                       copyRaw = copyRaw,
                       convert = convert,
