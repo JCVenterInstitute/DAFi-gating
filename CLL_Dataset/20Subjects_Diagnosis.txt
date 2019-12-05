@@ -1,0 +1,41 @@
+SubjectID	PanelID 	FileName	CLLDiagnosis	MRDfollowup	Comments
+2	Tube1	3.fcs	no		NO CLL
+2	Tube2	4.fcs	no		NO CLL
+3	Tube2	6.fcs	yes		Yes CLL
+3	Tube1	5.fcs	yes		Yes CLL 
+4	Tube1	7.fcs	no		NO CLL
+4	Tube2	8.fcs	no		NO CLL
+6	Tube1	11.fcs	yes		Yes CLL
+6	Tube2	12.fcs	yes		Yes CLL
+7	Tube1	13.fcs	yes	yes	MRD - Yes CLL 
+7	Tube2	14.fcs	yes	yes	MRD - Yes CLL 
+10	Tube1	19.fcs	yes		Yes CLL
+10	Tube2	20.fcs	yes		Yes CLL
+11	Tube1	60.fcs	yes		Yes CLL
+11	Tube2	61.fcs	yes		Yes CLL
+12	Tube1	23.fcs	yes	yes	MRD - Yes CLL 
+12	Tube2	24.fcs	yes	yes	MRD - Yes CLL 
+15	Tube1	31.fcs	yes		Yes CLL
+15	Tube2	32.fcs	yes		Yes CLL
+16	Tube1	33.fcs	yes	no	MRD - Yes CLL 
+16	Tube2	34.fcs	yes	no	MRD - Yes CLL 
+17	Tube1	35.fcs	yes		Yes CLL
+17	Tube2	36.fcs	yes		Yes CLL
+18	Tube1	39.fcs	yes		Yes CLL
+18	Tube2	40.fcs	yes		Yes CLL
+20	Tube1	44.fcs	yes	no	MRD - Yes CLL 
+20	Tube2	45.fcs	yes	no	MRD - Yes CLL 
+23	Tube1	50.fcs	yes		Yes CLL
+23	Tube2	51.fcs	yes		Yes CLL
+25	Tube1	54.fcs	yes		Yes CLL
+25	Tube2	55.fcs	yes		Yes CLL
+27	Tube1	58.fcs	yes		Yes CLL
+27	Tube2	59.fcs	yes		Yes CLL
+30	Tube1	66.fcs	no		NO CLL
+30	Tube2	67.fcs	no		NO CLL
+32	Tube1	74.fcs	yes		Yes CLL
+32	Tube2	75.fcs	yes		Yes CLL
+33	Tube1	76.fcs	no		NO CLL - T-PLL
+33	Tube2	77.fcs	no		NO CLL - T-PLL
+34	Tube1	78.fcs	no		NO CLL 
+34	Tube2	79.fcs	no		NO CLL 
