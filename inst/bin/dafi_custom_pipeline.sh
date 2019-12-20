@@ -145,8 +145,9 @@ time jupyter nbconvert --ExecutePreprocessor.timeout=10000 --to html_embed --exe
 mkdir Reports
 mv *.html Reports
 
-tar cf - TXT Gated PNG Reports --exclude-caches-all | pigz -p 24 > Job.$Label.tar.gz 2>tarerror.txt
-rm -Rf FCS Gated PNG Preprocessed TXT
+#tar cf - TXT Gated PNG Reports --exclude-caches-all | pigz -p 24 > Job.$Label.tar.gz 2>tarerror.txt
+rm -Rf FCS PNG Preprocessed TXT
+find Gated/**/* ! -name 'flock_results_all.txt' ! -name 'DUnSup_pop_MFI.txt' -type f -delete
 
 echo "done!"
 
