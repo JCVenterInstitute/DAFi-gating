@@ -7,7 +7,7 @@ MAINTAINER Ivan Chang (ichang@jcvi.org)
 # libav-tools for R and matplotlib anim
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    openjdk-8-jre &&  apt-get clean && \
+    openjdk-8-jre pigz && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /usr/src/myapp
@@ -33,7 +33,9 @@ ADD run_with_path.sh /opt/genepattern/resources/wrapper_scripts/run_with_path.sh
 ADD start.sh /usr/local/bin/start.sh
 
 RUN cd /var/DAFi-gating && \
-	git pull
+       git pull && \
+       fix-permissions /var/DAFi-gating 
+    
 
 # add details to  the .profile so GP can see them
 ADD profile /home/jovyan/profile
