@@ -9,10 +9,10 @@ Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., 
 	
 Paper link: https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.23371
 
-FlowJo plugin link (Developed by Pedro Milanez-Almeida of Tsang group of NIH/NIAID/CHI, with support from Josef Spidlen of BD/FlowJo):
-https://github.com/PedroMilanezAlmeida/DAFi
-
 Lee AJ, Chang I, Burel JG, Lindestam Arlehamn CS, Mandava A, Weiskopf D, Peters B, Sette A, Scheuermann RH, Qian Y. DAFi: A directed recursive data filtering and clustering approach for improving and interpreting data clustering identification of cell populations from polychromatic flow cytometry data. Cytometry A, 2018. 93(6):597-610. PMCID: PMC6030426.
+
+### FlowJo plugin link (developed by Pedro Milanez-Almeida of Tsang group of NIH/NIAID/CHI, with support from Josef Spidlen of BD/FlowJo):
+https://github.com/PedroMilanezAlmeida/DAFi
 
 ## Description: 
 The DAFi package provides a new framework for cell population identification for flow cytometry (FCM) data. The framework is compatible with many existing clustering algorithms such as Kmeans, Kmeans++, mini-batch Kmeans, gaussian mixture models, k-medoids, self-organizing map, etc, and allows user to input user defined gating hierarchy to convert the aforementioned unsupervised algorithms into powerful semi-supervised and automatic cell population identification approach. First, the data is read and preprocessed, then configuration files are parsed and implemented as user defined gating directions. Clustering algorithm choosen in the initiation is then applied to the data events of the whole FCM data at the start of the iterative gating/filtering loop, and optionally again at each specified population subset (reclustering). At each gating step, the user can specify to apply bisecting (events filtering based on user defined boundaries just like in manual gating), slope-based (events filtering based on user defined slopes), or cluster centroids based filtering (filtering all events members of a cluster based on their centroid's inclusion or exclusion by the user defined gates). Outputs include population events and percentages table, as well as an events printout table consisting of all event's transformed channel values and population membership info for external analysis and plotting. Several built-in plotting options are also available, e.g. 2D dot plots of the user specified gating channels, and centroids overlay to the 2D dot plots.
