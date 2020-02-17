@@ -11,7 +11,7 @@ Paper link: https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.23371
 
 Lee AJ, Chang I, Burel JG, Lindestam Arlehamn CS, Mandava A, Weiskopf D, Peters B, Sette A, Scheuermann RH, Qian Y. DAFi: A directed recursive data filtering and clustering approach for improving and interpreting data clustering identification of cell populations from polychromatic flow cytometry data. Cytometry A, 2018. 93(6):597-610. PMCID: PMC6030426.
 
-### FlowJo plugin link (developed by Pedro Milanez-Almeida of Tsang group of NIH/NIAID/CHI, with support from Josef Spidlen of BD/FlowJo):
+### FlowJo Plugin (developed by Pedro Milanez-Almeida of Tsang group of NIH/NIAID/CHI, with support from Josef Spidlen of BD/FlowJo):
 https://github.com/PedroMilanezAlmeida/DAFi
 
 ## Description: 
