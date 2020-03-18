@@ -1018,8 +1018,8 @@ int main(int argc, char **argv) {
     if ((argc != 4) && (argc != 5) && (argc != 6) && (argc != 7) && (argc != 8)) {
         fprintf(stderr, "Incorrect number of input parameters!\n"); //modified on July 23, 2010
         fprintf(stderr,
-                "DUnSup_Filtering data_file filter_spec_file1 filter_spec_file2\n"); //filter_spec_file 1 is those that need to be kept; filter_spec_file2 is those that need to be removed
-        fprintf(stderr, "DUnSup_Filtering data_file filter_spec_file1 filter_spec_file2 num_initial_clusters num_2ndpass_clusters num_threads rand_seed\n");
+                "DAFi data_file filter_spec_file1 filter_spec_file2\n"); //filter_spec_file 1 is those that need to be kept; filter_spec_file2 is those that need to be removed
+        fprintf(stderr, "DAFi data_file filter_spec_file1 filter_spec_file2 num_initial_clusters num_2ndpass_clusters num_threads rand_seed\n");
         abort();
     }
 
