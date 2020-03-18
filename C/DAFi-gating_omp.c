@@ -924,6 +924,7 @@ int main(int argc, char **argv) {
     char file_name[LINE_LEN];
     char f_name[LINE_LEN];
     char f_selected_name[LINE_LEN];
+    char f_selected_file_name[LINE_LEN];
 
 
     int file_Len = 0; //number of events from whole file
@@ -1644,8 +1645,10 @@ int main(int argc, char **argv) {
 		
 	    if (filtered_output_finished == 0)
 	    {
-		strcat(f_selected_name, "./_selected_filtered.txt");
-		f_final_filtered = fopen(f_selected_name,"w");		
+		f_selected_file_name[0]='\0';
+		strcat(f_selected_name, "_selected_filtered.txt");
+		sprintf(f_selected_file_name, "./%s", f_selected_name);
+		f_final_filtered = fopen(f_selected_file_name,"w");		
 		fprintf(f_final_filtered, "%s\n", para_name_string);
 
             	for (j = 0; j < file_Len; j++)
