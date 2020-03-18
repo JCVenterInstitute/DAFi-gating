@@ -2,7 +2,7 @@
 	
 	User-directed unsupervised identification of cell populations
 	
-	Author: Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., ichang@jcvi.org, and Bob Sinkovits, Ph.D., sinkovit@sdsc.edu
+	Authors: Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., ichang@jcvi.org, and Bob Sinkovits, Ph.D., sinkovit@sdsc.edu
 	
 	Copyright: Author and J. Craig Venter Institute
 	
@@ -19,8 +19,8 @@
 	6       8       7       81      140     50      120     3       1       0       0
 	7       8       7       20      80      25      90      3       1       0       0
 	
-	filter_spec file: a 10-column tab delimited file with the same format, but the events inside will be removed instead of being kept:
-	1       1       4       0       85      100     200     0       0       1   0
+	filter_spec file: a 11-column tab delimited file with the same format as gating_spec_file, but the events inside the gate will be removed instead of being kept:
+	1       1       4       0       85      100     200     0       0       1	0
     
     first_pass_max_num_clusters is the maximum number of clusters for the first-pass k-means clustering
     
