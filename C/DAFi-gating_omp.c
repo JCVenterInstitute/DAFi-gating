@@ -1315,8 +1315,10 @@ int main(int argc, char **argv) {
     
     size_c = (int *) malloc(sizeof(int) * num_population); //size of each cluster 
     memset(size_c, 0, sizeof(int) * num_population);
-    for (i = 0; i < num_population; i++) size_c[i] = 0;
+    for (i = 0; i < num_population; i++)
+	    size_c[i] = 0;
     
+    filtered_output_finished = 0;	
     //for each predefined population i, check if further clustering is necessary (adaptive clustering), generate population_ID, based on population_ID and filtered_parent, calculate number of events and percentage and write into file
     for (i = 0; i < num_rows; i++) 
     {
@@ -1608,8 +1610,7 @@ int main(int argc, char **argv) {
 
         //Note that we need MFI from all predefined gates/populations; but this is different from the needs of the visualization purpose
         //that needs to have MFI from both the predefined gate and the rest of the cells. The second part will be output only when the filtered_output[i]==1.
-        filtered_output_finished = 0;
-	    
+        	    
 	if (filtered_output[i] == 1)
         {
             
@@ -1643,7 +1644,7 @@ int main(int argc, char **argv) {
 		
 	    if (filtered_output_finished == 0)
 	    {
-		strcat(f_selected_name, "_selected_filtered.txt");
+		strcat(f_selected_name, "./_selected_filtered.txt");
 		f_final_filtered = fopen(f_selected_name,"w");		
 		fprintf(f_final_filtered, "%s\n", para_name_string);
 
