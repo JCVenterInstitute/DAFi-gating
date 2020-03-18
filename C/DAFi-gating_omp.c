@@ -1,6 +1,6 @@
 /************************************************************************************************************************
 	
-	User-directed unsupervised identification of cell populations
+	User-directed unsupervised identification of cell populations - for Galaxy platform
 	
 	Authors: Yu "Max" Qian, Ph.D., mqian@jcvi.org or qianyu_cs@yahoo.com, Ivan Chang, Ph.D., ichang@jcvi.org, and Bob Sinkovits, Ph.D., sinkovit@sdsc.edu
 	
