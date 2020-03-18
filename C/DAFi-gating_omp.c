@@ -111,9 +111,9 @@ void getfileinfo(FILE *f_src, int *file_Len, int *num_dm, char *name_string, int
 
     // repeat until the end of line is reached
     while ((src[i] != '\0') && (src[i] != '\n') && (src[i] != '\r')) {
-        current_name[j] = src[i];
+        current_name[j] = src[i]; //each time only one character is copied
 
-        if ((src[i] == '\t') && (prv != '\t')) //a complete word
+        if ((src[i] == '\t') && (prv != '\t')) //at the end of a complete word
         {
             current_name[j] = '\0';
 
@@ -124,27 +124,27 @@ void getfileinfo(FILE *f_src, int *file_Len, int *num_dm, char *name_string, int
                 strcat(name_string, "\t");
             } else {
                 *time_ID = time_pos;
-            }
+            	}
 
 
             current_name[0] = '\0';
             j = 0;
         }
 
-        if ((src[i] == '\t') && (prv == '\t')) //a duplicate tab or space
+        if ((src[i] == '\t') && (prv == '\t')) //a duplicate tab or space, current_name needs to be reset
         {
             current_name[0] = '\0';
             j = 0;
         }
 
-        if (src[i] != '\t')
+        if (src[i] != '\t') //a meaningful character, j can move forward
             j++;
 
         prv = src[i];
-        i++;
+        i++; //in any case, i needs to move forward
     }
 
-    if (prv != '\t') //the last one hasn't been retrieved
+    if (prv != '\t') //the last word hasn't been retrieved because it doesn't end with a tab delimiter
     {
         current_name[j] = '\0';
 
@@ -868,12 +868,10 @@ int numOfEventsInGate(int currentGate, int len, int *event_gate, int **event_par
                     filtered_out = 1;  //this event has been removed in some parent gate
                     break;
                 }
-                t = filtered_parent[t] -
-                    1; //please note that the filtered_parent[x] returns 0 to num_rows-1, however, it needs to be changed to -1 to num_rows-2 to be used
+                t = filtered_parent[t] - 1; //please note that the filtered_parent[x] returns 0 to num_rows-1, however, it needs to be changed to -1 to num_rows-2 to be used
             }
 
-            if (filtered_out ==
-                0) // neither removed by parent gates nor by the current gate
+            if (filtered_out == 0) // neither removed by parent gates nor by the current gate
             {
                 event_gate[j] = 0;    //0 means to keep
                 sizeOfGate++;    //increment number of events kept in current gate
@@ -915,6 +913,7 @@ int main(int argc, char **argv) {
     FILE *f_spec; //user spec file for data filtering
     FILE *f_spec_2;
     FILE *f_filtered; //filtered result
+    FILE *f_final_filtered; //user-selected filtered result
     FILE *f_majority; //proportion of a cluster inside the hyperegion in filtering mode
 
     FILE *f_filtered_percentage;
@@ -924,6 +923,7 @@ int main(int argc, char **argv) {
     char para_name_string[LINE_LEN];
     char file_name[LINE_LEN];
     char f_name[LINE_LEN];
+    char f_selected_name[LINE_LEN];
 
 
     int file_Len = 0; //number of events from whole file
@@ -948,6 +948,7 @@ int main(int argc, char **argv) {
     int num_rows_2 = 0;
 
     int filtered_out = 0;
+    int filtered_output_finished = 0; //indicating whether this is the first user-specified output population
 
     int *all_population_ID; //populationID of event (event -> cluster mapping)
     int **sub_population_ID; //Ivan: populationID of event (event -> cluster mapping) for next clustering run
@@ -1028,11 +1029,14 @@ int main(int argc, char **argv) {
     f_src = fopen(argv[1], "r");
 
     f_name[0] = '\0';
+    f_selected_name[0] = '\0'; 
     while (file_name[i] != '.') {
         f_name[i] = file_name[i];
+	f_selected_name[i] = file_name[i];
         i++;
     }
     f_name[i] = '\0';
+    f_selected_name[i] = '\0';
 
     printf("file name is %s\n", f_name);
     i = 0;
@@ -1168,10 +1172,16 @@ int main(int argc, char **argv) {
     fclose(f_spec);
     fclose(f_spec_2);
 
-    getfileinfo(f_src, &file_Len, &num_dm, para_name_string,
-                &time_ID); //get the filelength, number of dimensions, and num/name of parameters
-                
-                
+    getfileinfo(f_src, &file_Len, &num_dm, para_name_string, &time_ID); //get the filelength, number of dimensions, and num/name of parameters
+    
+    i=0;
+    while (para_name_string[i]!='\0')
+	i++;
+	
+    if ((para_name_string[i-1]=='\t') || (para_name_string[i-1]=='\r') || (para_name_string[i-1]=='\n'))
+	    para_name_string[i-1]='\0';
+    
+    i=0;            
 
     /************************************************* Read the data *****************************************************/
 
@@ -1225,8 +1235,7 @@ int main(int argc, char **argv) {
 
     printf("file_Len = %d\n", file_Len);
     printf("num_rows = %d\n", num_rows);
-    all_gate_ID = (int **) malloc(sizeof(int *) *
-                                  file_Len); //for all predefined cell populations, each constrained by only the 2D boundary, but their intersection will be saved into final_gate_ID
+    all_gate_ID = (int **) malloc(sizeof(int *) * file_Len); //for all predefined cell populations, each constrained by only the 2D boundary, but their intersection will be saved into final_gate_ID
     memset(all_gate_ID, 0, sizeof(int *) * file_Len);
     for (i = 0; i < file_Len; i++) {
         all_gate_ID[i] = (int *) malloc(sizeof(int) * num_rows);
@@ -1235,8 +1244,7 @@ int main(int argc, char **argv) {
     //printf("Memory allocation for initial filtering/2...\n");
 
     
-    size_filtering = (int *) malloc(
-            sizeof(int) * num_rows); //the final size (number of events) of each predefined cell population
+    size_filtering = (int *) malloc(sizeof(int) * num_rows); //the final size (number of events) of each predefined cell population
     memset(size_filtering, 0, sizeof(int) * num_rows);
 
     filtered_percentage = (double *) malloc(sizeof(double) * num_rows); //based on the parent population
@@ -1247,8 +1255,7 @@ int main(int argc, char **argv) {
 
     //printf("Memory allocation for initial filtering/3s ...\n");
 
-    gate_center = (double **) malloc(sizeof(double *) *
-                                     2); //for centroids of the two clusters (the kept and the discarded), which change for every predefined gate/cell population
+    gate_center = (double **) malloc(sizeof(double *) * 2); //for centroids of the two clusters (the kept and the discarded), which change for every predefined gate/cell population
     memset(gate_center, 0, sizeof(double *) * 2);
     for (i = 0; i < 2; i++) {
         gate_center[i] = (double *) malloc(sizeof(double) * num_dm);
@@ -1601,7 +1608,9 @@ int main(int argc, char **argv) {
 
         //Note that we need MFI from all predefined gates/populations; but this is different from the needs of the visualization purpose
         //that needs to have MFI from both the predefined gate and the rest of the cells. The second part will be output only when the filtered_output[i]==1.
-        if (filtered_output[i] == 1)
+        filtered_output_finished = 0;
+	    
+	if (filtered_output[i] == 1)
         {
             
             ////////////////Initialize directory for each gating population//////////////
@@ -1617,10 +1626,8 @@ int main(int argc, char **argv) {
             /////////////////////////////////////////////////////////////////////////////
             
             //////////////////Output filtered events for the selected population/////////
-            snprintf(f_name, sizeof(char) * LINE_LEN, "./pop%i/_filtered.txt", pop);
-            //strcat(f_name, "_filtered.txt");
-            f_filtered = fopen(f_name, "w");
-
+            snprintf(f_name, sizeof(char) * LINE_LEN, "./pop%i/_filtered.txt", pop);                        
+	    f_filtered = fopen(f_name, "w");
             fprintf(f_filtered, "%s\n", para_name_string);
 
             for (j = 0; j < file_Len; j++)
@@ -1633,6 +1640,27 @@ int main(int argc, char **argv) {
                 }
 
             fclose(f_filtered);
+		
+	    if (filtered_output_finished == 0)
+	    {
+		strcat(f_selected_name, "_selected_filtered.txt");
+		f_final_filtered = fopen(f_selected_name,"w");		
+		fprintf(f_final_filtered, "%s\n", para_name_string);
+
+            	for (j = 0; j < file_Len; j++)
+                	if (final_gate_ID[j] == 0) {
+                    	    for (p = 0; p < num_dm; p++)
+                       	 	if (p == num_dm - 1)
+                            	   fprintf(f_final_filtered, "%d\n", (int) input_data[j][p]);
+                        	else
+                            	   fprintf(f_final_filtered, "%d\t", (int) input_data[j][p]);
+               		 		}
+		    
+		fclose(f_final_filtered);    
+		filtered_output_finished = 1;
+	    }
+		
+	    
             /////////////////////////////////////////////////////////////////////////////
 
             //////Output profile and filtered percentage for the selected population/////
