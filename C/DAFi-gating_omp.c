@@ -1646,8 +1646,9 @@ int main(int argc, char **argv) {
 	    if (filtered_output_finished == 0)
 	    {
 		f_selected_file_name[0]='\0';
+		strcpy(f_selected_file_name,"./");
 		strcat(f_selected_name, "_selected_filtered.txt");
-		sprintf(f_selected_file_name, "./%s", f_selected_name);
+		strcat(f_selected_file_name, f_selected_name);
 		f_final_filtered = fopen(f_selected_file_name,"w");		
 		fprintf(f_final_filtered, "%s\n", para_name_string);
 
