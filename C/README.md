@@ -11,7 +11,7 @@ dafi_gating data_file gating_spec_file filter_spec_file initial_max_num_clusters
 
 data_file is a tab delimited file with compensated and transformed values (please use FCSTrans to convert FCS files to tab delimited file https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3932304/) 
 	
-	gating_spec_file: a 11-column tab delimited file, for recursive data filtering
+	gating_spec_file: a 12-column tab delimited file, for recursive data filtering
 	Pop_ID	DimensionX	DimensionY	Min_X	Max_X	Min_Y	Max_Y	Parent_ID	Cluster_Type(0: Clustering; 1: Bisecting; 2: Slope-based)	Visualize_or_Not	Recluster_or_Not	Cell_type(optional)
 	1       1       4       20      70      5       55      0       0       0	0	Lymph
 	2       1       2       30      90      0       110     1       1       0	1	Singlets
