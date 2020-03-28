@@ -1,7 +1,9 @@
 #
 # FCS conversion program
-#
-#
+# Last Updated: 24 March 2020 by Max Qian
+# Support both BD and Accuri Files
+# Both FCS2.0 and FCS3.0 are now output to 0 to 4095 (previously FCS2.0 is 0 to 1023)
+
 suppressMessages(library(parallel))
 suppressMessages(library(flowCore))
 suppressMessages(library(openxlsx))
@@ -18,15 +20,15 @@ anonymous <- function(name) {
 }
 
 # set output to 0 when input is less than cutoff value
-ipfloor <- function (x, cutoff = 0, target = 0) {
+ipfloor <- function (x, cutoff=0, target=0) {
   y = x
   if (x <= cutoff)
     y = target
   y
 }
 
-# set output to 0 when input is less than cutoff value
-ipceil <- function (x, cutoff = 0, target = 0) {
+# set output to target when input is less than cutoff value
+ipceil <- function (x, cutoff=4095, target=4095) {
   y = x
   if (x >= cutoff)
     y = target
@@ -35,18 +37,20 @@ ipceil <- function (x, cutoff = 0, target = 0) {
 
 # Convert fluorescent values to channel output using log transformation
 # log10 transformation, not needed because of the use of FCSTransTransform
-#iplog <- function(x) {
-#  x = sapply(x, ipfloor, cutoff = 1, target = 1)
-#  y = 1024 * log10(x) - 488.6
-#  y
-#}
+iplog <- function(x, channelrange) {
+  x = sapply(x, ipfloor, cutoff = 1, target = 1)
+  y = 1024.0 * log10(x) - 488.6
+  y = sapply(y, ipfloor)
+  y = sapply(y, ipceil)
+  y
+}
 
 # immport linear function - convert scatter values to channel output
 # linear transformation
-ipscatter <- function (x, channelrange = 262144) {
+ipscatter <- function (x, channelrange) {
   y = 4095.0 * x / channelrange
   y = sapply(y, ipfloor)
-  y = sapply(y, ipceil, cutoff = 4095, target = 4095)
+  y = sapply(y, ipceil)
   y
 }
 
@@ -55,10 +59,16 @@ ipscatter <- function (x, channelrange = 262144) {
 iptime <- function (x, channelrange) {
   # use simple cutoff for now
   y = sapply(x, ipfloor)
+  #y = sapply(y, ipceil)
   y
 }
 
-
+ipfluoInt <- function (x, channelrange) {
+  # use simple cutoff for now
+  y = sapply(x, ipfloor)
+  y = sapply(y, ipceil)
+  y
+}
 # get marker type
 getMarkerType <- function(name) {
   type = ""
@@ -92,7 +102,7 @@ getMarkerType <- function(name) {
 #' @param rescale whether to rescale or not
 scatterTransform <-
   function(transformationId = "defaultScatterTransform",
-           channelrange = 262144,
+           channelrange,
            range = 4096,
            cutoff = 4096,
            rescale = TRUE) {
@@ -111,8 +121,21 @@ scatterTransform <-
 #' @param channelrange original channel range
 #' @param range total range
 #' @param rescale whether to rescale or not
-timeTransform <- function(transformationId = "defaultTimeTransform",
-                          channelrange = 262144,
+LogTransform <- function(transformationId = "defaultLogTransform",
+                          channelrange,
+                          range = 4096,
+                          rescale = TRUE) {
+  t <- new(
+    "transform",
+    .Data = function(x) {
+      x <- iplog(x, channelrange)
+    }
+  )
+  t
+}
+
+TimeTransform <- function(transformationId = "defaultTimeTransform",
+                          channelrange,
                           range = 4096,
                           rescale = TRUE) {
   t <- new(
@@ -124,6 +147,159 @@ timeTransform <- function(transformationId = "defaultTimeTransform",
   t
 }
 
+
+fluoIntTransform <- function(transformationId = "defaultfluoIntTransform",
+                          channelrange,
+                          range = 4096,
+                          rescale = TRUE) {
+  t <- new(
+    "transform",
+    .Data = function(x) {
+      x <- ipfluoInt(x, channelrange = channelrange)
+    }
+  )
+  t
+}
+
+isAccuriData <- function(keydata) {
+    isTRUE(as.character(keydata$"$CYT") == "BD Accuri C6" || as.character(keydata$"$CYT") == "Accuri C6")
+}
+
+# immport convert function for Accuri FCS data file
+# @param fcs    flowFrame object
+convertAccuriFcs <- function(fcs_raw, compen = "internal") {
+  debug = TRUE
+  #check file type and FCS version
+  if (class(fcs_raw)[1] != "flowFrame") {
+    print("convertfcs requires flowFrame object as input")
+    return(FALSE)
+  }
+  keywords = keyword(fcs_raw)
+  print("This is an Accuri File.")
+  if (debug)
+    print(paste("FCS version:", keywords$FCSversion))
+  if (debug)
+    print(paste("File data type:", keywords['$DATATYPE']))
+  if (keywords$FCSversion == "2" ||
+      keywords$FCSversion == "3" || keywords$FCSversion == "3.1") {
+    datatype = unlist(keywords['$DATATYPE']) #check data type
+    if (datatype == 'F' || datatype == 'I') {
+      #apply compensation if available
+      if (compen == "internal") {
+        print(paste("Applying compensation from fcs header", compen))
+        spill = keyword(fcs_raw)$SPILL
+      } else if (file_ext(compen) == "xlsx") {
+        print(paste("Applying Excel compensation matrix file: ", compen))
+        spill = as.matrix(read.xlsx(compen,
+                                    rowNames = TRUE, colNames = TRUE))
+      } else if (file_ext(compen) == "csv") {
+        print(paste("Applying CSV compensation matrix file: ", compen))
+        spill = as.matrix(read.csv(
+          compen,
+          header = TRUE,
+          row.names = 1,
+          check.names = FALSE
+        ))
+      } else {
+        spill = NULL
+      }
+      
+      if (debug)
+        print("check spill")
+      if (is.null(spill) == FALSE) {
+        colnames(spill) <- gsub(
+          x = colnames(spill),
+          pattern = "\\.",
+          replacement = " "
+        )
+        tryCatch({
+          fcs_raw = compensate(fcs_raw, spill)
+        }, error = function(ex) {
+          str(ex)
+          
+        })
+        print ("applied compensation!")
+      }
+      
+      
+      markers = colnames(fcs_raw)
+      markerCols = list()
+      if (debug)
+        print("loop through markers")
+      scatterlist = list()
+      markerlist = list()
+	       
+      if (debug) {
+        print("Transformation via FCSTrans...")
+      }
+      
+      fcs = fcs_raw
+      
+      for (i in 1:length(markers)) {
+        rangekeyword = paste("$P", i, "R", sep = "")
+        #if (debug) print(paste("  range keyword:", rangekeyword))
+        print(markers[i])
+        channelrange = as.numeric(keywords[rangekeyword])
+        if (debug)
+          print(paste(" range value:", as.character(channelrange)))
+        markertype = getMarkerType(markers[i])
+        print(markertype)
+        if ((markertype != "SCATTER") & (markertype != "TIME") & (datatype == 'F')) {
+          print("transforming marker channel")
+          markerCols <- c(markerCols, as.integer(i))
+          markerlist <-
+            transformList(markers[i], FCSTransTransform(channelrange = channelrange))
+          fcs <- transform(fcs, markerlist)
+          print("done transforming marker channel")
+		} else if ((markertype != "SCATTER") & (markertype != "TIME") & (datatype == 'I')) {
+		  print("transforming integer marker channel")
+		  markerCols <- c(markerCols, as.integer(i))
+          markerlist <-
+            transformList(markers[i], fluoIntTransform(channelrange = channelrange))
+          fcs <- transform(fcs, markerlist)
+          print("done transforming integer marker channel)")
+        } else if (markertype == "SCATTER") {
+          print("transforming scatter channel")
+		  markerCols <- c(markerCols, as.integer(i))
+          scatterlist <-
+            transformList(markers[i], scatterTransform(channelrange = channelrange/10.0))
+          fcs <- transform(fcs, scatterlist)
+          print("done transforming scatter channel)")
+        } else if (markertype == "TIME") {
+          fcs <-
+            transform(fcs, transformList(
+              markers[i],
+              TimeTransform(channelrange = channelrange)
+            ))
+        }
+      }
+      
+      colsToUse = as.integer(which(!is.na(fcs_raw@parameters[[2]]), TRUE))
+      
+      if (length(colsToUse) == length(markerCols)) {
+        #rename channels to marker type
+        if (debug) {
+          print("renaming channels to marker type...")
+          print(colnames(fcs_raw)[colsToUse])
+          print(as.character(fcs_raw@parameters[[2]])[colsToUse])
+        }
+        colnames(fcs_raw)[colsToUse] <-
+          as.character(fcs_raw@parameters[[2]])[colsToUse]
+      } else {
+        colsToUse = as.integer(markerCols)
+      }     
+    #} else if (datatype == 'I') {
+    #  fcs = fcs_raw
+    } else {
+      print(paste("Data type", datatype, "in FCS 3 standard is not supported"))
+      fcs = NULL
+    }
+  } else {
+    print(paste("FCS version", keyword(fcs)$FCSversion, "is not supported"))
+    fcs = NULL
+  }
+  fcs
+}
 # immport convert function - convert flow cytometry values to channel output
 # iterate columns name and treat data in three categories:
 #   scatter      linear
@@ -152,14 +328,14 @@ convertfcs <- function(fcs_raw, compen = "internal") {
     if (datatype == 'F') {
       #apply compensation if available
       if (compen == "internal") {
-        print(paste("Applying compensation from fcs ", compen))
+        print(paste("Applying compensation from fcs header", compen))
         spill = keyword(fcs_raw)$SPILL
       } else if (file_ext(compen) == "xlsx") {
-        print(paste("Applying compensation matrix file: ", compen))
+        print(paste("Applying Excel compensation matrix file: ", compen))
         spill = as.matrix(read.xlsx(compen,
                                     rowNames = TRUE, colNames = TRUE))
       } else if (file_ext(compen) == "csv") {
-        print(paste("Applying compensation matrix file: ", compen))
+        print(paste("Applying CSV compensation matrix file: ", compen))
         spill = as.matrix(read.csv(
           compen,
           header = TRUE,
@@ -172,7 +348,6 @@ convertfcs <- function(fcs_raw, compen = "internal") {
       
       if (debug)
         print("check spill")
-        print(spill)
       if (is.null(spill) == FALSE) {
         colnames(spill) <- gsub(
           x = colnames(spill),
@@ -221,6 +396,7 @@ convertfcs <- function(fcs_raw, compen = "internal") {
           print("done transforming marker channel")
         } else if (markertype == "SCATTER") {
           print("transforming scatter channel")
+		  markerCols <- c(markerCols, as.integer(i))
           scatterlist <-
             transformList(markers[i],
                           scatterTransform(channelrange = channelrange))
@@ -268,7 +444,7 @@ convertfcs <- function(fcs_raw, compen = "internal") {
     } else if (datatype == 'I') {
       fcs = fcs_raw
     } else {
-      print(paste("Data type", datatype, "in FCS 3 is not supported"))
+      print(paste("Data type", datatype, "in FCS 3 standard is not supported"))
       fcs = NULL
     }
   } else {
@@ -289,7 +465,8 @@ convertfcs <- function(fcs_raw, compen = "internal") {
 # example:
 #   > convertfcs('~/data/ad008')
 #   This will convert ad008.fcs and create ad008_ip_channel.txt
-processfcsfile <- function(fcsfile,
+processfcsfile <-
+  function(fcsfile,
            compen = "internal",
            verbose = F,
            overwrite = F,
@@ -302,8 +479,6 @@ processfcsfile <- function(fcsfile,
     print(
       paste(
         "parameters:",
-        "compen",
-        compen,
         "verbose",
         verbose,
         "overwrite",
@@ -321,7 +496,6 @@ processfcsfile <- function(fcsfile,
         sep = " "
       )
     )
-    print("INSIDE PROCESS FCS")
     
     isvalid = F
     tryCatch({
@@ -423,11 +597,21 @@ processfcsfile <- function(fcsfile,
           if (verbose)
             print(paste("    Converting", fcsfile))
           
-          fcs <- convertfcs(fcs_raw, compen = compen)
+          if (isAccuriData(pdata)) {
+                fcs <- convertAccuriFcs(fcs_raw, compen = compen)
+            } else {
+                fcs <- convertfcs(fcs_raw, compen = compen)
+            }
+		  #fcs <- convertfcs(fcs_raw, compen = compen)
           
           if (!is.null(fcs)) {
-            cdata <- exprs(fcs)
-            
+            if (pdata$FCSversion == "2") {
+				cdata <- exprs(fcs) * 4.0
+				}
+            else {
+				cdata <- exprs(fcs)
+			}
+			
             #write.FCS(fcs, paste(outputfilename,"fcs",sep="."))
             #if (verbose) print(paste("      Converted to", outputfilename))
             channelfile <- paste(outputfilename, "txt", sep = ".")
@@ -524,34 +708,29 @@ ipconvert <-
     
     if (compen == "internal") {
       if (file.exists(compen)) {
-      print(paste("Applying compensation from fcs ", compen))
-      #spill = keyword(entry)$SPILL
+        print(paste("Replace compensation matrix from fcs header with External file", compen))
       }else {
-        print("comp file not found!")
+        print("No external compensation file provided!")
       }
+      
     } else if (file_ext(compen) == "xlsx") {
       if (file.exists(compen)) {
-        print(paste("Applying compensation matrix file: ", compen))
-       # spill = as.matrix(read.xlsx(compen,
-        #                            rowNames = TRUE, colNames = TRUE))
+        print(paste("Applying Excel compensation matrix file: ", compen))
       }else {
-        print("comp file not found!")
+        print("Excel comp file not found!")
       }
+      
     } else if (file_ext(compen) == "csv") {
       if (file.exists(compen)) {
-        print(paste("Applying compensation matrix file: ", compen))
-       # spill = as.matrix(read.csv(
-        #  compen,
-         # header = TRUE,
-          #row.names = 1,
-        #  check.names = FALSE
-       # ))
+        print(paste("Applying CSV compensation matrix file: ", compen))
       }else {
-        print("comp file not found!")
+        print("CSV comp file not found!")
       }
     }
     
     entryclass = class(entry)
+    
+    
     
     if (is.vector(entry) && length(entry) > 1) {
       if (verbose)
@@ -607,7 +786,8 @@ ipconvert <-
                       compen = compen,
                       verbose = verbose,
                       overwrite = overwrite,
-                      renameSource = renameSource,
+                      renameSource =
+                        renameSource,
                       removeName = removeName,
                       copyRaw = copyRaw,
                       convert = convert,
