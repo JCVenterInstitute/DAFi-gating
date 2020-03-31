@@ -52,7 +52,7 @@ void get_spec_num(FILE *f_spec, int *num_rows) {
 //filtered_d_x_low: a value between 0 to 200 (corresponding to 0 to 4095)
 //filtered_parent: 1 means the parent of this population is the one at Row #1 (number of rows starts from 1)
 //filtered_type: 0 means clustering (centers of clusters need to be inside the box); 1 means bisecting (all events in the box will be kept)
-//filtered_output: 0 means not outputting the results (flock_results.txt and the filtered data (_filt.txt)); 1 means outputting both results for this population
+//filtered_output: 0 means not outputting the results (dafi_results.txt and the filtered data (_filt.txt)); 1 means outputting both results for this population
 //filtered_2nd_pass: 0 means using results from 1st pass clustering; 1 means to undergo second pass clustering - added 2/5/17 by Ivan
 void get_spec_info(FILE *f_spec, int *filtered_ID, int *filtered_d_x, int *filtered_d_y, int *filtered_x_low,
                    int *filtered_x_upper, int *filtered_y_low, int *filtered_y_upper, int *filtered_parent,
@@ -392,8 +392,7 @@ ID2Center_all(double **data_in, int file_Len, int num_dm, int num_clust, int *cl
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Merge neighboring grids to clusters
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-double
-recursive_optimize(double **Matrix, int k, double terms, int file_Len, int num_dm, int *shortest_id, double **center,
+double recursive_optimize(double **Matrix, int k, double terms, int file_Len, int num_dm, int *shortest_id, double **center,
                    int random_init, int num_threads, int rand_seed) {
 
   int i, j, t;
@@ -883,15 +882,17 @@ int numOfEventsInGate(int currentGate, int len, int *event_gate, int **event_par
 /**************************** Assign sub populations from parent population ********************************************/
 void assignPopulation(int currentPop, int len, int *event_gate, double **input_data, double ***pop_data, int **pop_ID_map){
 
-    int i = 0, j;
-        for (j = 0; j < len; j++) {
-            if (event_gate[j] == 0)
+    int i = 0,
+    int j = 0;
+
+    for (j = 0; j < len; j++) {
+       if (event_gate[j] == 0)
             {
                 pop_data[currentPop][i] = input_data[j];
                 pop_ID_map[currentPop][i] = j;
                 i++;
             }
-        }
+     }
 }
 
 
@@ -1294,7 +1295,7 @@ int main(int argc, char **argv) {
     //calculate and save its number of events
     //based on its parent, calculate its percentage
     //save its percentage
-    //based on its output type, calculate flock_results.txt for visualization
+    //based on its output type, calculate dafi_results.txt for visualization
     //complete the above procedure for each predefined population
     //output the number of events and percentage for all predefined populations
 
@@ -1309,8 +1310,8 @@ int main(int argc, char **argv) {
 
     printf("Starting adaptive clustering for each predefined population...\n");
 
-    int parentPop;
-    int parentSize;
+    int parentPop=0;
+    int parentSize=0;
     int lastClustering = -1;
 
 
@@ -1320,12 +1321,14 @@ int main(int argc, char **argv) {
 	    size_c[i] = 0;
 
     filtered_output_finished = 0;
+    for (i=0;i<num_rows;i++)
+        size_filtering[i]=0;
     //for each predefined population i, check if further clustering is necessary (adaptive clustering), generate population_ID, based on population_ID and filtered_parent, calculate number of events and percentage and write into file
     for (i = 0; i < num_rows; i++)
     {
 
         printf("Predefined cell population #: %d\n", i);
-        size_filtering[i] = 0;
+        //size_filtering[i] = 0;
         filtered_percentage[i] = 0.0;
         parentPop = filtered_parent[i]-1;
         parentSize = size_filtering[parentPop];
@@ -1335,8 +1338,7 @@ int main(int argc, char **argv) {
             /*** First-run k-means clustering for the whole file ****/
             if (lastClustering==-1) {
               printf("Starting initial clustering for whole cell population...\n");
-                recursive_optimize(normalized_data, num_population, TERMS, file_Len, num_dm, all_population_ID, population_center,
-                       1, NUM_THREADS, SEED);
+                recursive_optimize(normalized_data, num_population, TERMS, file_Len, num_dm, all_population_ID, population_center, 1, NUM_THREADS, SEED);
 
                 char cent_name[LINE_LEN];
 
@@ -1397,7 +1399,7 @@ int main(int argc, char **argv) {
                     all_gate_ID[j][i] = 0; //0 = keep
             }
 
-            if (filtered_2nd_pass[parentPop] != 0 && parentSize > 100)
+            if (filtered_2nd_pass[parentPop] != 0 && parentSize > 100) //Noted by Max that because the first row always have parentSize==0, the first cell population does not need to enter this if process
             {
 
                 if (filtered_2nd_pass[parentPop] == 2)
@@ -1407,20 +1409,27 @@ int main(int argc, char **argv) {
                 else
                     num_sub_pop[i] = max_num_pop;
 
+                if (num_sub_pop[i]!=0) //Max Qian moved this memory allocation here so that the memory is allocated before the use
+                {
+                    sub_population_center[parentPop] = (double **) malloc(sizeof(double *) * num_sub_pop[i]); //Ivan: based on the size of events in current predetermined cell population, create a data matrix for the cell population
+                    memset(sub_population_center[parentPop], 0, sizeof(double *) * num_sub_pop[i]);
+
+                    for(j = 0; j < num_sub_pop[i]; j++) {
+                       sub_population_center[parentPop][j] = (double *) malloc(sizeof(double) * num_dm);
+                       memset(sub_population_center[parentPop][j], 0, sizeof(double) * num_dm);
+                    }
+                }
+
+
                 //recluster now if not done so earlier
-                if(((parentPop+1)>lastClustering)||sub_population_center[parentPop]==0){
+                if(((parentPop+1)>lastClustering) || sub_population_center[parentPop]==0){
                     printf("Current number of k %d\n", num_sub_pop[i]);
 
                     sub_population_ID[parentPop] = (int *) malloc(sizeof(int) * parentSize);
                     memset(sub_population_ID[parentPop], 0, sizeof(int) * parentSize);
 
                     //printf("Memory allocation for temp population center...\n");
-                    sub_population_center[parentPop] = (double **) malloc(sizeof(double *) * num_sub_pop[i]); //Ivan: based on the size of events in current predetermined cell population, create a data matrix for the cell population
-                    memset(sub_population_center[parentPop], 0, sizeof(double *) * num_sub_pop[i]);
-                    for(j = 0; j < num_sub_pop[i]; j++) {
-                        sub_population_center[parentPop][j] = (double *) malloc(sizeof(double) * num_dm);
-                        memset(sub_population_center[parentPop][j], 0, sizeof(double) * num_dm);
-                    }
+
 
                     printf("Current cell population: %d\tParent cell population: %d\n", i+1, parentPop+1);
                     printf("Parent population size: %d\n", parentSize);
@@ -1489,7 +1498,7 @@ int main(int argc, char **argv) {
             //f_majority is only used in clustering mode, to show which clusters are in or out
             fprintf(f_majority, "------------------------------------------------------------\n");
             fprintf(f_majority, "For the predefined gate number %d:\n", i + 1);
-            fprintf(f_majority, "FLOCK_Population_ID\tProportion_in_Sample\tFiltered=1orNot=0\n");
+            fprintf(f_majority, "DAFi_Population_ID\tProportion_in_Sample\tFiltered=1orNot=0\n");
             for (j = 0; j < num_population; j++)
                 fprintf(f_majority, "%d\t%.4f\t%d\n", j + 1, (double) size_c[j] / (double) file_Len, filtered_p[j]);
         }
@@ -1569,30 +1578,30 @@ int main(int argc, char **argv) {
             memset(norm_pop_data[i][j], 0, sizeof(double) * num_dm);
         }
 
+        //free(pop_ID_map[i]); //noted by Max on 3/30/2020 because pop_ID_map is potentially used by earlier statement
+
         pop_ID_map[i] = (int *) malloc(sizeof(int) * size_filtering[i]);
         memset(pop_ID_map[i], 0, sizeof(int) * size_filtering[i]);
 
         //Assign population members' data, as well as a index mapping of the sub population to the original population
         //if (NORM_METHOD == 3 ||NORM_METHOD == 2) {
-            assignPopulation(i, file_Len, final_gate_ID, normalized_data, pop_data, pop_ID_map);
+        //    assignPopulation(i, file_Len, final_gate_ID, normalized_data, pop_data, pop_ID_map); //Max commented this sentence on 3/30/2020
         //}else {
-            assignPopulation(i, file_Len, final_gate_ID, input_data, pop_data, pop_ID_map);
-            tran(pop_data[i], size_filtering[i], num_dm, NORM_METHOD, norm_pop_data[i]);
+        assignPopulation(i, file_Len, final_gate_ID, input_data, pop_data, pop_ID_map);
+        tran(pop_data[i], size_filtering[i], num_dm, NORM_METHOD, norm_pop_data[i]); //this is re-normalization for re-clustering
         //}
 
         if (filtered_parent[i] == 0) //parent is the whole file
             filtered_percentage[i] = (double) size_filtering[i] * 100.0 / (double) file_Len;
         else {
-            if ((filtered_parent[i] > 0) && (size_filtering[filtered_parent[i] - 1] !=
-                                             0))  //note that the filtered_parent[x]-1 is the real row ID of the predefined population
-                filtered_percentage[i] =
-                        (double) size_filtering[i] * 100.0 / (double) size_filtering[filtered_parent[i] - 1];
+            if ((filtered_parent[i] > 0) && (size_filtering[filtered_parent[i] - 1] != 0))  //note that the filtered_parent[x]-1 is the real row ID of the predefined population
+                filtered_percentage[i] = (double) size_filtering[i] * 100.0 / (double) size_filtering[filtered_parent[i] - 1];
         }
 
         fprintf(f_filtered_percentage, "%d\t%.4f\n", i + 1, filtered_percentage[i]);
         fprintf(f_filtered_events, "%d\t%d\n", i + 1, size_filtering[i]);
         ///////////////////////////////////////////////////////////////////////////
-
+        printf("Calculating MFI... ...\n");
         /////////////////////MFI////////////////////////////////////////////////////
         //Compute Population Center of filtered and unfiltered events
         ID2Center_all(input_data, file_Len, num_dm, 2, final_gate_ID, gate_center);
@@ -1601,12 +1610,11 @@ int main(int argc, char **argv) {
 
         for (j = 0; j < num_dm; j++) {
             if (j == num_dm - 1)
-                fprintf(f_filtered_MFI, "%.0f\n",
-                        gate_center[0][j]); //only the population that is kept will need to have MFI
+                fprintf(f_filtered_MFI, "%.0f\n", gate_center[0][j]); //only the population that is kept will need to have MFI
             else
                 fprintf(f_filtered_MFI, "%.0f\t", gate_center[0][j]);
         }
-
+        printf("finish MFI calculation.\n");
         ///////////////////////////////////////////////////////////////////////////
 
         //Note that we need MFI from all predefined gates/populations; but this is different from the needs of the visualization purpose
@@ -1620,10 +1628,15 @@ int main(int argc, char **argv) {
             struct stat st = {0};
             char popdir[32];
 
+            popdir[0]='\0';
             snprintf(popdir, sizeof(char) * 32, "./pop%i", pop);
 
             if (stat(popdir, &st) == -1) {
                 mkdir(popdir, 0700);
+                printf("Population folder created successfully.\n");
+            }
+            else{
+                printf("Population folder already exists.\n");
             }
             /////////////////////////////////////////////////////////////////////////////
 
@@ -1680,7 +1693,7 @@ int main(int argc, char **argv) {
 
             snprintf(cid_name, sizeof(char) * LINE_LEN, "./pop%i/population_id.txt", pop);
             //snprintf(out_name, sizeof(char) * LINE_LEN, "coordinates.txt", pop);
-            snprintf(results_name, sizeof(char) * LINE_LEN, "./pop%i/flock_results.txt", pop);
+            snprintf(results_name, sizeof(char) * LINE_LEN, "./pop%i/dafi_results.txt", pop);
 
             f_cid = fopen(cid_name, "w");
             f_out = fopen("coordinates.txt", "w");
@@ -1879,16 +1892,17 @@ int main(int argc, char **argv) {
 
     for (i = 0; i < num_rows; i++){
         free(sub_population_ID[i]);
-        if (sub_population_center[i] != 0){
+        //if (sub_population_center[i] != 0 { //Max Qian replaced this as it should be num_sub_pop[i]!=0
+        if (num_sub_pop[i] != 0){
             for (j = 0; j < num_sub_pop[i]; j++) {
                 free(sub_population_center[i][j]);
             }
         }
         for (j = 0; j < size_filtering[i]; j++) {
-            //free(pop_data[i][j]);
+            free(pop_data[i][j]);
             free(norm_pop_data[i][j]);
         }
-        free(pop_data[i]);
+        free(pop_data[i]); //Max Qian uncommented this sentence as it is necessary
         free(norm_pop_data[i]);
         free(sub_population_center[i]);
         free(pop_ID_map[i]);
