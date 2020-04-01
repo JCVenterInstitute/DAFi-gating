@@ -925,7 +925,7 @@ int main(int argc, char **argv) {
     char para_name_string[LINE_LEN];
     char file_name[LINE_LEN];
     char f_name[LINE_LEN];
-    char f_selected_name[LINE_LEN];
+    //char f_selected_name[LINE_LEN];
     char f_selected_file_name[LINE_LEN];
     char cent_name[LINE_LEN];
     char parameters_name[LINE_LEN];
@@ -1040,17 +1040,17 @@ int main(int argc, char **argv) {
     strcpy(file_name, argv[1]);
     f_src = fopen(argv[1], "r");
 
-    f_name[0] = '\0';
-    f_selected_name[0] = '\0';
-    while (file_name[i] != '.') {
-        f_name[i] = file_name[i];
-        f_selected_name[i] = file_name[i];
-        i++;
-    }
-    f_name[i] = '\0';
-    f_selected_name[i] = '\0';
+    //f_name[0] = '\0';
+    //f_selected_name[0] = '\0';
+    //while (file_name[i] != '.') {
+    //    f_name[i] = file_name[i];
+        //f_selected_name[i] = file_name[i];
+    //    i++;
+    //}
+    //f_name[i] = '\0';
+    //f_selected_name[i] = '\0';
 
-    printf("file name is %s\n", f_name);
+    //printf("file name is %s\n", f_name);
     i = 0;
 
     if (argc == 4) {
@@ -1341,7 +1341,7 @@ int main(int argc, char **argv) {
         //size_filtering[i] = 0;
         filtered_percentage[i] = 0.0;
         parentPop = filtered_parent[i]-1;
-        printf("parentPop=%d\n",parentPop);
+        //printf("parentPop=%d\n",parentPop);
 
         if (parentPop<0)
         {
@@ -1673,6 +1673,7 @@ int main(int argc, char **argv) {
             /////////////////////////////////////////////////////////////////////////////
 
             //////////////////Output filtered events for the selected population/////////
+            f_name[0] = '\0';
             snprintf(f_name, sizeof(char) * LINE_LEN, "./pop%i/_filtered.txt", pop_selected);
             f_filtered = fopen(f_name, "w");
             fprintf(f_filtered, "%s\n", para_name_string);
@@ -1691,9 +1692,9 @@ int main(int argc, char **argv) {
             if (filtered_output_finished == 0)
             {
                 f_selected_file_name[0]='\0';
-                strcpy(f_selected_file_name,"./");
-                strcat(f_selected_name, "_selected_filtered.txt");
-                strcat(f_selected_file_name, f_selected_name);
+                strcpy(f_selected_file_name,"./_selected_filtered.txt");
+                //strcat(f_selected_name, "_selected_filtered.txt");
+                //strcat(f_selected_file_name, f_selected_name);
                 printf("user-selected filtered file name is %s\n",f_selected_file_name);
                 f_final_filtered = fopen(f_selected_file_name,"w");
                 fprintf(f_final_filtered, "%s\n", para_name_string);
