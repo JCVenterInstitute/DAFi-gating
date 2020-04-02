@@ -1424,23 +1424,16 @@ int main(int argc, char **argv) {
             if (filtered_2nd_pass[parentPop] != 0 && parentSize > 100) //Noted by Max that because the first row always have parentSize==0, the first cell population does not need to enter this if process
             {
                 printf("pop_ID_map memory to be used.\n");
+                //printf("sub_population_center[%d]=%d\n", parentPop, sub_population_center[parentPop]);
 
                 if (filtered_2nd_pass[parentPop] <= 1)
                     num_sub_pop[i] = start_num_pop;
                 else
                     num_sub_pop[i] = max_num_pop;
 
-                if (num_sub_pop[i]!=0) //Max Qian moved this memory allocation here so that the memory is allocated before the use
-                {
-                    sub_population_center[parentPop] = (double **) malloc(sizeof(double *) * num_sub_pop[i]); //Ivan: based on the size of events in current predetermined cell population, create a data matrix for the cell population
-                    memset(sub_population_center[parentPop], 0, sizeof(double *) * num_sub_pop[i]);
 
-                    for(j = 0; j < num_sub_pop[i]; j++) {
-                       sub_population_center[parentPop][j] = (double *) malloc(sizeof(double) * num_dm);
-                       memset(sub_population_center[parentPop][j], 0, sizeof(double) * num_dm);
-                    }
-                }
 
+               // printf("number of subpop[%d] is %d. lastClustering = %d; parentPop=%d; sub_population_center[%d]=%d\n", i, num_sub_pop[i], lastClustering, parentPop, parentPop, sub_population_center[parentPop]);
 
                 //recluster now if not done so earlier
                 if(((parentPop+1)>lastClustering) || sub_population_center[parentPop]==0){
@@ -1449,7 +1442,16 @@ int main(int argc, char **argv) {
                     sub_population_ID[parentPop] = (int *) malloc(sizeof(int) * parentSize);
                     memset(sub_population_ID[parentPop], 0, sizeof(int) * parentSize);
 
-                    //printf("Memory allocation for temp population center...\n");
+                    if (num_sub_pop[i]!=0) //Max Qian moved this memory allocation here so that the memory is allocated before the use
+                    {
+                        sub_population_center[parentPop] = (double **) malloc(sizeof(double *) * num_sub_pop[i]); //Ivan: based on the size of events in current predetermined cell population, create a data matrix for the cell population
+                        memset(sub_population_center[parentPop], 0, sizeof(double *) * num_sub_pop[i]);
+
+                        for(j = 0; j < num_sub_pop[i]; j++) {
+                            sub_population_center[parentPop][j] = (double *) malloc(sizeof(double) * num_dm);
+                            memset(sub_population_center[parentPop][j], 0, sizeof(double) * num_dm);
+                        }
+                    }
 
 
                     printf("Current cell population: %d\tParent cell population: %d\n", i+1, parentPop+1);
@@ -1504,6 +1506,8 @@ int main(int argc, char **argv) {
                                 tmp_filtered_p[j] = 1; //1 = discard (inside the defined hyper region)
                     }
                 }
+                printf("parentSize is %d\n",parentSize);
+
                 for (j = 0; j < parentSize; j++) { //iterate through all events
                     pppp = sub_population_ID[parentPop][j];
 
@@ -1595,18 +1599,18 @@ int main(int argc, char **argv) {
         if (size_filtering[i]!=0)
         {
 
-        pop_data[i] = (double **) malloc(sizeof(double *) * size_filtering[i]); //Ivan: based on the size of events in current predetermined cell population, create a data matrix for the cell population
-        memset(pop_data[i], 0, sizeof(double *) * size_filtering[i]);
-        for(j = 0; j < size_filtering[i]; j++) {
-            pop_data[i][j] = (double *) malloc(sizeof(double) * num_dm);
-            memset(pop_data[i][j], 0, sizeof(double) * num_dm);
-        }
-        norm_pop_data[i] = (double **) malloc(sizeof(double *) * size_filtering[i]); //Ivan: based on the size of events in current predetermined cell population, create a data matrix for the cell population
-        memset(norm_pop_data[i], 0, sizeof(double *) * size_filtering[i]);
-        for(j = 0; j < size_filtering[i]; j++) {
-            norm_pop_data[i][j] = (double *) malloc(sizeof(double) * num_dm);
-            memset(norm_pop_data[i][j], 0, sizeof(double) * num_dm);
-        }
+            pop_data[i] = (double **) malloc(sizeof(double *) * size_filtering[i]); //Ivan: based on the size of events in current predetermined cell population, create a data matrix for the cell population
+            memset(pop_data[i], 0, sizeof(double *) * size_filtering[i]);
+            for(j = 0; j < size_filtering[i]; j++) {
+                pop_data[i][j] = (double *) malloc(sizeof(double) * num_dm);
+                memset(pop_data[i][j], 0, sizeof(double) * num_dm);
+            }
+            norm_pop_data[i] = (double **) malloc(sizeof(double *) * size_filtering[i]); //Ivan: based on the size of events in current predetermined cell population, create a data matrix for the cell population
+            memset(norm_pop_data[i], 0, sizeof(double *) * size_filtering[i]);
+            for(j = 0; j < size_filtering[i]; j++) {
+                norm_pop_data[i][j] = (double *) malloc(sizeof(double) * num_dm);
+                memset(norm_pop_data[i][j], 0, sizeof(double) * num_dm);
+            }
 
         //free(pop_ID_map[i]); //noted by Max on 3/30/2020 because pop_ID_map is potentially used by earlier statement
 
@@ -1937,6 +1941,7 @@ int main(int argc, char **argv) {
                 free(sub_population_center[i][j]);
             }
             free(sub_population_center[i]);
+            printf("sub_population_center[%d] is released.\n", i);
         }
 
 
