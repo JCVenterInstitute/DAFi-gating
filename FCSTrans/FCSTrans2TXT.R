@@ -406,7 +406,7 @@ convertfcs <- function(fcs_raw, compen = "internal") {
           fcs <-
             transform(fcs, transformList(
               markers[i],
-              timeTransform(channelrange = channelrange)
+              TimeTransform(channelrange = channelrange)
             ))
         }
       }
