@@ -1,12 +1,12 @@
 # LJI Pertussis CyTOF data analysis
 
-### Data Analysts
+### Data analysts
 Aishwarya Mandava, M.S. (amandava@jcvi.org), and Yu "Max" Qian, Ph.D (mqian@jcvi.org or qianyu_cs@yahoo.com)
 
-### Transformation and Preprocessing
+### Transformation and preprocessing
 The preprocessing of FCS files was done in R. The pre-gating channels and lineage channels of expression matrix from FCS file were arcsinh transformed using *asinh* function in R with a cofactor of *2*. The instrument channels however were not transformed using arcsinh but linearly transformed and re-scaled. The co-factor was empirically determined based on the data distributions as in ***Arcsinh_Co-factor_LJI_CyTOF.png***. The matrix was then linearly rescaled to a range of *0 to 4096* for DAFi visualization, followed by renaming the marker names in R. The preprocessed files, in TXT format, were then used to apply the command line version of DAFi Gating. The input configuration files have co-ordinates of the gates used for each subject. 
 
-### Channel	Channel names
+### Channel names
 Pre-gating channels:	DNA-1, DNA-2, Viability;
 Lineage channels:	CD45, CD3, RGCC, CD19, IL31RA, CD38, CD20-CD4, CD64, CD11c, IGHG1, CX3CR1, CD86, CD123, GBP2, CCL4, CCL2, CD45RA, CD274, OX40, CD161, CD1c, CD80, BCMA, CD33, TNF, CD40, CXCL10, CCR7, IFIT2, CD25, CD54, CCL7, IgM-CD8a, CD14, HLA-DR, CD56, CD16;
 Instrument channels:	Time, Event length, Center, Offset, Width, Residual;
