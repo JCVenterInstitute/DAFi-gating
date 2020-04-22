@@ -1,9 +1,9 @@
 # LJI Pertussis CyTOF data analysis
 
-### Analysts
+### Data Analysts
 Aishwarya Mandava, M.S. (amandava@jcvi.org), and Yu "Max" Qian, Ph.D (mqian@jcvi.org or qianyu_cs@yahoo.com)
 
-## Data Transformation and Preprocessing
+### Transformation and Preprocessing
 The preprocessing of FCS files was done in R. The pre-gating channels and lineage channels of expression matrix from FCS file were arcsinh transformed using *asinh* function in R with a cofactor of *2*. The instrument channels however were not transformed using arcsinh but linearly transformed and re-scaled. The co-factor was empirically determined based on the data distributions as in ***Arcsinh_Co-factor_LJI_CyTOF.png***. The matrix was then linearly rescaled to a range of *0 to 4096* for DAFi visualization, followed by renaming the marker names in R. The preprocessed files, in TXT format, were then used to apply the command line version of DAFi Gating. The input configuration files have co-ordinates of the gates used for each subject. 
 
 ### Channel	Channel names
@@ -21,7 +21,7 @@ expr <- cbind(asinh(expr[,c(pregating_channels,lineage_channels)]/cofactor), exp
 a*(data-min(data))/(max(data)-min(data)
 a=4096
 ```
-### DAFi-Gating
+### DAFi gating identification of cell populations
 Inputs are inclusion configuration and exclusion configuration gating files, which can be found in folder *Config*.
 Command line:
 ```
@@ -41,5 +41,7 @@ The DAFi gating boundaries for the singlet gate on DNA-1 vs DNA-2 were defined b
 ### Useful reference for CyTOF data preprocessing
 http://biosurf.org/cytof_data_scientist.html
 
+### Acknowledgement
+Human Immunology Project Consortium Center at La Jolla Institute for Immunology (NIAID U19AI118626, PIs: Drs. Alessandro Sette and Bjoern Peters; JCVI PI: Dr. Richard H. Scheuermann).
 
 
