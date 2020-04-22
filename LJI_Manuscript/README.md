@@ -18,8 +18,7 @@ expr <- cbind(asinh(expr[,c(pregating_channels,lineage_channels)]/cofactor), exp
 ```
 ### Linear rescaling 
 ```
-a*(data-min(data))/(max(data)-min(data)
-a=4096
+For each value x, x_rescaled = a*(x-min(column containing x))/(max(column containing x)-min(column containing x)), a=4096.
 ```
 ### DAFi gating identification of cell populations
 Inputs are inclusion configuration and exclusion configuration gating files, which can be found in folder *Config*.
