@@ -23,23 +23,23 @@ expr <- cbind(asinh(expr[,c(pregating_channels,lineage_channels)]/cofactor), exp
 For each value x, x_rescaled = a*(x-min(column containing x))/(max(column containing x)-min(column containing x)), a=4096.
 ```
 ### DAFi gating identification of cell populations
-Inputs are inclusion configuration and exclusion configuration gating files, which can be found in folder *Config*.
+Inputs are inclusion configuration and exclusion configuration gating files, which can be found in folder ***DAFi_Configuration***.
 Command line:
 ```
 ./DAFi_Gating.sh <Input FCS_Converted_TXT file> <Inclusion config file> <exclusion config file>  <initial cluster size> <re-cluster size>
 ```
-The DAFi command line including number of clusters and seed number can be found in file *DAFi_Gating.sh*
+The DAFi command line including number of clusters and seed number can be found in file ***DAFi_Gating.sh***
 
 ### DAFi configuration files
-Configuration files for each subject can be found in folder *DAFi_Configuration*.
+Configuration files for each subject can be found in folder ***DAFi_Configuration***.
 
 ### Gating for singlets
 The DAFi gating boundaries for the singlet gate on DNA-1 vs DNA-2 were defined based on *kernel density estimation* for each sample using ***kde2d*** from MASS package in R with 50 grid points in each direction. The events with low levels on DNA are debris and high level on DNA are doublets. For each subject, we used the sample of the first visit to identify the initial singlet gate location. It is important to note that this gating location is used for the DAFi analysis to identify the cluster of singlet cells in high-dimensional space, instead of outputing the cells defined by the density contour lines. An example of *kernel density estimation* is illustrated in ***SingletGateforDAFi_Sample2691.png***.
 
 ### Percentages and MFI of identified cell populations
-Percentages of cell populations can be found in *LJI_Pertussis_CyTOF_BasicCellTypePercents_30Aug2018.xlsx*.
+Percentages of cell populations can be found in ***LJI_Pertussis_CyTOF_BasicCellTypePercents_30Aug2018.xlsx***.
 
-Mean/Median of fluorescence intensities can be found in *LJI_Pertussis_Mean_Median_MFI_Oct30th.xlsx*.
+Mean/Median of fluorescence intensities can be found in ***LJI_Pertussis_Mean_Median_MFI_Oct30th.xlsx***.
 
 ### Visualization in 2D dot plots
 To illustrate DAFi-gating analysis result, we generated an example composite figure of all 2D dot plots showing the cell populations identified by sequential DAFi-gating analysis from sample 2968: ***HiDAFi_Sample2968.png***. 
