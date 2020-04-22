@@ -35,13 +35,13 @@ Configuration files for each subject can be found in folder *DAFi_Configuration*
 ### Gating for singlets (***Example: SingletGateforDAFi_Sample2691.png***)
 The DAFi gating boundaries for the singlet gate on DNA-1 vs DNA-2 were defined based on kernel density estimation for each subject using ***kde2d*** from MASS package in R with 50 grid points in each direction. The events with low levels on DNA are debris and high level on DNA are doublets. For each subject, we used the sample of the first visit to identify the initial singlet gate location. It is important to note that this gating location is used for the DAFi analysis to identify the cluster of singlet cells in high-dimensional space, instead of outputing the cells defined by the density contour lines. 
 
-### Percentages and MFI (both mean and median) of identified cell populations
-Percentages of cell populations can be found at *LJI_Pertussis_CyTOF_BasicCellTypePercents_30Aug2018.xlsx*.
+### Percentages and MFI of identified cell populations
+Percentages of cell populations can be found in *LJI_Pertussis_CyTOF_BasicCellTypePercents_30Aug2018.xlsx*.
 
-MFI can be found at *LJI_Pertussis_Mean_Median_MFI_Oct30th.xlsx*.
+Mean/Median of fluorescence intensities can be found in *LJI_Pertussis_Mean_Median_MFI_Oct30th.xlsx*.
 
-### Composites of 2D dot plots (***Example: HiDAFi_Sample2968.png***)
-As an example, a composite figure of all 2D dot plots showing the cell populations identified by sequential DAFi-gating analysis can be found in folder *Composite_of_2D_Plots". 
+### Visualization in 2D dot plots
+To illustrate DAFi-gating analysis result, we generated an example composite figure of all 2D dot plots showing the cell populations identified by sequential DAFi-gating analysis from sample 2968: ***HiDAFi_Sample2968.png***. 
 
 ### Useful reference for CyTOF data preprocessing
 http://biosurf.org/cytof_data_scientist.html
