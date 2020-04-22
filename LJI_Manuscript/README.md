@@ -1,6 +1,6 @@
 # LJI Pertussis CyTOF data analysis
 
-### Authors
+### Analysts
 Aishwarya Mandava, M.S. (amandava@jcvi.org), and Yu "Max" Qian, Ph.D (mqian@jcvi.org or qianyu_cs@yahoo.com)
 
 ## Data Transformation and Preprocessing
