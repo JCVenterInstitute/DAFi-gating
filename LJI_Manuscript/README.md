@@ -24,7 +24,7 @@ For each value x, x_rescaled = a*(x-min(column containing x))/(max(column contai
 Inputs are inclusion configuration and exclusion configuration gating files, which can be found in folder *Config*.
 Command line:
 ```
-./DAFi_Gating.sh <Input FCS file> <Inclusion config file> <exclusion config file>  <initial cluster size> <re-cluster size>
+./DAFi_Gating.sh <Input FCS_Converted_TXT file> <Inclusion config file> <exclusion config file>  <initial cluster size> <re-cluster size>
 ```
 The DAFi command line including number of clusters and seed number can be found in file *DAFi_Gating.sh*
 
