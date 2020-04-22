@@ -42,6 +42,6 @@ The DAFi gating boundaries for the singlet gate on DNA-1 vs DNA-2 were defined b
 http://biosurf.org/cytof_data_scientist.html
 
 ### Acknowledgement
-Human Immunology Project Consortium Center at La Jolla Institute for Immunology (NIAID U19AI118626, PIs: Drs. Alessandro Sette and Bjoern Peters; JCVI PI: Dr. Richard H. Scheuermann).
+Human Immunology Project Consortium Center at the La Jolla Institute for Immunology (NIAID U19AI118626, PIs: Drs. Alessandro Sette and Bjoern Peters; JCVI PI: Dr. Richard H. Scheuermann).
 
 
