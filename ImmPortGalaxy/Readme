@@ -1,0 +1,1 @@
+This folder contains the Galaxy workflows we created for automated FLOCK and DAFi analysis of flow cytometry data. Note that the workflows include other ImmPortGalaxy tools such as FCSTrans, RearrangeHeader, and GenerateOverview etc.
