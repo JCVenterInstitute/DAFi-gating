@@ -13,7 +13,7 @@ Informatics Department, J. Craig Venter Institute
 Authors and J. Craig Venter Institute
 
 ### Funding source:
-US NIAID UH2AI132342; PI: Yu "Max" Qian, PhD; Co-Investigator: Richard H. Scheuermann, PhD.
+US NIAID UH2AI132342 (PI: Yu "Max" Qian, PhD; Co-Investigator: Richard H. Scheuermann, PhD)
 
 Project period: July 2018 to June 2021
 
@@ -33,4 +33,4 @@ Galaxy-Workflow-DAFI_FLOCK_2.ga: Galaxy installation file for DAFi+FLOCKv2 workf
 ### Manuscript under review
 https://www.medrxiv.org/content/10.1101/2021.09.14.21263182v1 
 
-For questions, feel free to contact: mqian@jcvi.org
+For questions, feel free to contact: mqian@jcvi.org or qianyu.cs@gmail.com
