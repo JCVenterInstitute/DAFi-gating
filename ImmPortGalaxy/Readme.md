@@ -6,22 +6,28 @@ This GitHub folder contains the Galaxy workflows we created for automated FLOCK 
 
 ### Main contributors:
 Yu "Max" Qian, Aishwarya Mandava, Mehmet Kuscuoglu, Yun "Renee" Zhang, and Richard H. Scheuermann.
+
 Informatics Department, J. Craig Venter Institute
 
 ### Copyright:
 Authors and J. Craig Venter Institute
 
 ### Funding source:
-US NIAID UH2AI132342 (PI: Yu "Max" Qian, PhD; Co-Investigator: Richard H. Scheuermann, PhD.)
+US NIAID UH2AI132342; PI: Yu "Max" Qian, PhD; Co-Investigator: Richard H. Scheuermann, PhD.
+
 Project period: July 2018 to June 2021
 
 ### Example data analysis results and Galaxy tools implemented
 https://am794.github.io/ImmPort_DataAnalysis/index.html
 
 dafi_intel.tgz: XML file of DAFi tool for Galaxy installation
+
 Galaxy-Workflow-DAFI_FLOCK_TXT.ga: Galaxy installation file for DAFi+FLOCK workflow with TXT files as input
+
 Galaxy-Workflow-DAFI_FLOCK_COMP.ga: Galaxy installation file for DAFi+FLOCK workflow with support for external compensation
+
 Galaxy-Workflow-DAFI_FLOCK.ga: Galaxy installation file for DAFi+FLOCKv1 workflow
+
 Galaxy-Workflow-DAFI_FLOCK_2.ga: Galaxy installation file for DAFi+FLOCKv2 workflow
 
 ### Manuscript under review
