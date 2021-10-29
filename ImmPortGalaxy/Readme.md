@@ -30,6 +30,8 @@ Galaxy-Workflow-DAFI_FLOCK.ga: Galaxy installation file for DAFi+FLOCKv1 workflo
 
 Galaxy-Workflow-DAFI_FLOCK_2.ga: Galaxy installation file for DAFi+FLOCKv2 workflow
 
+UH2_ImmPort_Influenza_Studies_Metadata.xlsx: metadata of 55 ImmPort influenza vaccine studies, organized based on studies, reagent panels, and cell types
+
 ### Manuscript under review
 https://www.medrxiv.org/content/10.1101/2021.09.14.21263182v1 
 
