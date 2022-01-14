@@ -2,7 +2,7 @@
 # FCS conversion program
 # Last Updated: 24 March 2020 by Max Qian
 # Last Updated: 19 October 2021 by Yue Liu
-# Support both BD and Accuri Files
+# Support both BD and Accuri Files; Support FCS3.1 and updated format of compensation matrix
 # Both FCS2.0 and FCS3.0 are now output to 0 to 4095 (previously FCS2.0 is 0 to 1023)
 
 suppressMessages(library(parallel))
