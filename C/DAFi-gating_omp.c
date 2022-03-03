@@ -1729,7 +1729,7 @@ int main(int argc, char **argv) {
 
             snprintf(cid_name, sizeof(char) * LINE_LEN, "./pop%i/population_id.txt", pop_selected);
             //snprintf(out_name, sizeof(char) * LINE_LEN, "coordinates.txt", pop);
-            snprintf(results_name, sizeof(char) * LINE_LEN, "./pop%i/dafi_results.txt", pop_selected);
+            snprintf(results_name, sizeof(char) * LINE_LEN, "./pop%i/DAFi_results.txt", pop_selected);
 
             f_cid = fopen(cid_name, "w");
             f_out = fopen("coordinates.txt", "w");
