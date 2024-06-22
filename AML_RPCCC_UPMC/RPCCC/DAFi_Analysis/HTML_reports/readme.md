@@ -1,0 +1,1 @@
+Download the HTML reports to your local computer. Open the report with a browser. Each report includes 2D-by-2D dot plots across cell populations (i.e., gates) and across samples with interactive visualization.
