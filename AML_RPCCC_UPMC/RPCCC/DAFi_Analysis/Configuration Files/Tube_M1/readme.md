@@ -1,1 +1,1 @@
-This folder contains DAFi configuration files used to identify the leukemic cell populations from Tube M1 samples.
+This folder contains DAFi configuration files used to identify the leukemic cell populations from Tube M1 samples. For each of the subtypes of M1-M5 of AML, there is a corresponding gating strategy that can be applied across samples.
